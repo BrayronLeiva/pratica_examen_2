@@ -74,7 +74,7 @@ public class Worker {
                             Candidato obj = (Candidato) in.readObject();
                             System.out.println(obj.getNombre());
                             service.agregar_cantidato(obj);
-                            srv.add_candidato_lista_clientes(obj);
+                            srv.add_candidato_lista_clientes(new Candidato(obj.getId(), obj.getNombre(),obj.getVotos()));
                         } catch (Exception ex) {}
                         break;
                     case Protocol.SEND_LISTA_CANTIDADOS:

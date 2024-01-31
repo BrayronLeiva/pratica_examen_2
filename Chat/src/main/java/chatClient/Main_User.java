@@ -18,6 +18,7 @@ public class Main_User {
         View view = new View(window);
         Controller controller =new Controller(view, model);
 
+
     }
 
 

@@ -75,6 +75,12 @@ public class View implements Observer {
         JOptionPane.showMessageDialog(window, msg, "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public void limpiar_interfaz(){
+        txf_id.setText("");
+        txf_nombre.setText("");
+        table_candidatos.clearSelection();
+    }
+
     private void initTable(){
         DefaultTableModel modelo = new DefaultTableModel();
 

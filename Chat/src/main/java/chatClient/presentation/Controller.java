@@ -42,20 +42,25 @@ public class Controller  {
     }
 
     public void agregarCandidato(){
-
-        Message message = new Message();
-        //message.setMessage(text);
-        Candidato obj = this.generar_candidato();
-        message.setSender(model.getCurrentUser());
-        ServiceProxy.instance().agregar_cantidato(obj);
-        model.commit(Model.CHAT);
+        try {
+            Message message = new Message();
+            //message.setMessage(text);
+            Candidato obj = this.generar_candidato();
+            if (model.getLista_candidatos().existAlready(obj.getId()))
+                throw new Exception("Este cantidado ya existe\n");
+            message.setSender(model.getCurrentUser());
+            ServiceProxy.instance().agregar_cantidato(obj);
+            model.commit(Model.CHAT);
+        }catch (Exception ex){
+            view.lanzar_mensaje(ex.getMessage());
+        }
+        view.limpiar_interfaz();
     }
 
     public void efectuarVoto(){
 
         Message message = new Message();
         //message.setMessage(text);
-        Candidato obj = this.generar_candidato();
         message.setSender(model.getCurrentUser());
         try {
             if (!is_item_select()) {
@@ -66,6 +71,7 @@ public class Controller  {
             model.commit(Model.CHAT);
         }catch (Exception ex){
             view.lanzar_mensaje(ex.getMessage());
+            view.limpiar_interfaz();
         }
     }
 

@@ -2,7 +2,7 @@ package chatProtocol;
 
 import java.io.Serializable;
 
-public class Candidato implements Serializable {
+public class Candidato implements Serializable, Comparable<Candidato> {
     private String id;
     private String nombre;
     private int votos;
@@ -48,5 +48,10 @@ public class Candidato implements Serializable {
                 ", nombre='" + nombre + '\'' +
                 ", votos=" + votos +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Candidato o) {
+        return Integer.compare(o.getVotos(), this.votos);
     }
 }

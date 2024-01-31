@@ -13,6 +13,7 @@ import chatProtocol.User;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Model extends java.util.Observable {
@@ -75,11 +76,13 @@ public class Model extends java.util.Observable {
         System.out.println("Candidato a actualizar " + target.getNombre() + "\n" + target.getId() + "\n" + target.getVotos());
         target.setVotos(obj.getVotos());
         System.out.println("Candidato a actualizado " + target.getNombre() + "\n" + target.getId() + "\n" + target.getVotos());
+        //this.ordenar_lista_x_votos();
 
     }
 
     public void agregar_candidato(Candidato obj){
         lista_candidatos.add(obj);
+        //this.ordenar_lista_x_votos();
     }
 
     public void recargar_tabla(JTable table) throws Exception {
@@ -87,13 +90,39 @@ public class Model extends java.util.Observable {
         DefaultTableModel modelo = (DefaultTableModel) table.getModel();
         if (table.getModel().getRowCount() > 0)
             this.limpiar_tabla(table);
-
+        this.ordenar_lista_x_votos();
         for (int i = 0; i < this.lista_candidatos.getListaCandidatos().size(); i++){
             Candidato obj = this.lista_candidatos.getListaCandidatos().get(i);
             Object[] fila = new Object[]{obj.getId(),obj.getNombre(),obj.getVotos()};
             modelo.addRow(fila);
         }
 
+    }
+
+    /*1234 Pepe 5 0
+    4321 Roberto 4 1
+    5678 Mike 1 2
+    */
+
+    public void ordenar_lista_x_votos(){
+
+        /*Candidato target = null;
+        Lista_Candidatos list = new Lista_Candidatos();
+        int tam = lista_candidatos.getListaCandidatos().size();
+        for (int e = 0; e < tam;e++ ) {
+            int t = lista_candidatos.getListaCandidatos().size();
+            target = lista_candidatos.getListaCandidatos().get(0);
+            for (int i = 0; i < t; i++) {
+                Candidato obj = lista_candidatos.getListaCandidatos().get(i);
+                if (obj.getVotos() > target.getVotos()) {
+                    target = obj;
+                }
+            }
+            lista_candidatos.getListaCandidatos().remove(target);
+            list.add(target);
+        }
+        lista_candidatos = list;*/
+        Collections.sort(lista_candidatos.getListaCandidatos());
     }
 
     public void limpiar_tabla(JTable table){
