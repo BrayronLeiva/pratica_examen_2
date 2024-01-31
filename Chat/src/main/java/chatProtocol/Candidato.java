@@ -39,6 +39,8 @@ public class Candidato implements Serializable {
         this.votos = votos;
     }
 
+    public void agregarVoto(){votos = votos+1;}
+
     @Override
     public String toString() {
         return "Candidato{" +

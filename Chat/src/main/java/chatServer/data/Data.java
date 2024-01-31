@@ -1,5 +1,6 @@
 package chatServer.data;
 
+import chatProtocol.Candidato;
 import chatProtocol.Lista_Candidatos;
 import chatProtocol.User;
 
@@ -31,4 +32,25 @@ public class Data {
     public void setLista_candidatos(Lista_Candidatos lista_candidatos) {
         this.lista_candidatos = lista_candidatos;
     }
+
+    public void imprimir_candidatos(){
+        System.out.println("IMPRIMIENDO CANTIDADOS DE SERVER");
+        for (Candidato obj:lista_candidatos.getListaCandidatos()) {
+            System.out.println( obj.getNombre() + "\n" + obj.getId() + "\n" + obj.getVotos());
+        }
+    }
+
+    public void efectuar_voto(String id){
+        Candidato obj = this.seleccionar_candidato(id);
+        obj.agregarVoto();
+
+    }
+    public Candidato seleccionar_candidato(String id){
+        for (Candidato obj:lista_candidatos.getListaCandidatos()) {
+            if (obj.getId().equals(id)){
+                return obj;
+            }
+        }return null;
+    }
+
 }

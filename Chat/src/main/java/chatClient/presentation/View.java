@@ -5,6 +5,8 @@ import chatProtocol.Message;
 import chatProtocol.User;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -34,7 +36,7 @@ public class View implements Observer {
         //DefaultCaret caret = (DefaultCaret) messages.getCaret();
         //caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         this.window = w;
-        window.setSize(500,400);
+        window.setSize(700,500);
         window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         window.setTitle("VOTACION");
         try {
@@ -42,13 +44,8 @@ public class View implements Observer {
         } catch (Exception e) {}
         window.setContentPane(panel);
         window.setVisible(true);
-
-        btn_agregar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.agregarCandidato();
-            }
-        });
+        this.initTable();
+        this.initButtons();
 
     }
 
@@ -77,6 +74,35 @@ public class View implements Observer {
     public void lanzar_mensaje(String msg){
         JOptionPane.showMessageDialog(window, msg, "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
+
+    private void initTable(){
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        modelo.addColumn("Numero");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Votos");
+
+        table_candidatos.setModel(modelo);
+        table_candidatos.setVisible(true);
+    }
+
+    public void initButtons(){
+        btn_agregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.agregarCandidato();
+            }
+        });
+
+        btn_votar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.efectuarVoto();
+            }
+        });
+    }
+
+
 /*
     public void update(java.util.Observable updatedModel, Object properties) {
 
@@ -130,4 +156,6 @@ public class View implements Observer {
     public JButton getBtn_agregar() {
         return btn_agregar;
     }
+
+    public JFrame getWindow() { return window;  }
 }
