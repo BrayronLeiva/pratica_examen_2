@@ -1,6 +1,6 @@
 package chatClient.logic;
 
-import chatClient.presentation.Controller;
+import chatClient.presentation.Controller.Controller;
 import chatProtocol.*;
 
 import java.io.IOException;
@@ -8,8 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import javax.swing.SwingUtilities;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ServiceProxy implements IService{
     private static IService theInstance;

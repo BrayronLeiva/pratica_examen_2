@@ -1,9 +1,10 @@
-package chatClient.presentation;
+package chatClient.presentation.Controller;
+
+import chatClient.presentation.Controller.Controller;
 
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
 
 public class Window_Listener implements WindowListener {
     private Controller controller;

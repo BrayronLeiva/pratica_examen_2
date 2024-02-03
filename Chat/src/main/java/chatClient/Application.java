@@ -1,17 +1,10 @@
 package chatClient;
 
-import chatClient.presentation.Controller;
-import chatClient.presentation.Model;
-import chatClient.presentation.View;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.io.IOException;
+import chatClient.presentation.Controller.Controller;
 
 public class Application {
-
-    public static void main(String[] args) throws Exception {
-        new Main_User();
+    Application() throws Exception {
+        Controller controller =new Controller();
     }
 
 }

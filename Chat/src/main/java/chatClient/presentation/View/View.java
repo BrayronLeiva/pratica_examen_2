@@ -1,14 +1,11 @@
-package chatClient.presentation;
+package chatClient.presentation.View;
 
 import chatClient.Application;
-import chatProtocol.Message;
-import chatProtocol.User;
+import chatClient.presentation.Controller.Controller;
+import chatClient.presentation.Model.Model;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.DefaultCaret;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
@@ -28,24 +25,25 @@ public class View implements Observer {
     Model model;
     Controller controller;
 
-    public View(JFrame w) {
+    public View(Controller controller) {
         panel.setVisible(true);
         //Application.window.getRootPane().setDefaultButton(login);
         //bodyPanel.setVisible(false);
 
         //DefaultCaret caret = (DefaultCaret) messages.getCaret();
         //caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        this.window = w;
+        this.window = new JFrame();
         window.setSize(700,500);
         window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         window.setTitle("VOTACION");
         try {
             window.setIconImage((new ImageIcon(Application.class.getResource("/logo.png"))).getImage());
         } catch (Exception e) {}
+        this.controller = controller;
         window.setContentPane(panel);
         window.setVisible(true);
         this.initTable();
-        this.initButtons();
+        //this.initButtons(); //creo que por posicion y el flujo que no funciona asi
 
     }
 
@@ -93,19 +91,9 @@ public class View implements Observer {
     }
 
     public void initButtons(){
-        btn_agregar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.agregarCandidato();
-            }
-        });
+        btn_agregar.addActionListener(controller.getButton_listener());
 
-        btn_votar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.efectuarVoto();
-            }
-        });
+        btn_votar.addActionListener(controller.getButton_listener());
     }
 
 

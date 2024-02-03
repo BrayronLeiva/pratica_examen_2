@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatClient.presentation;
+package chatClient.presentation.Model;
 
 import chatProtocol.Candidato;
 import chatProtocol.Lista_Candidatos;
-import chatProtocol.Message;
 import chatProtocol.User;
 
 import javax.swing.*;

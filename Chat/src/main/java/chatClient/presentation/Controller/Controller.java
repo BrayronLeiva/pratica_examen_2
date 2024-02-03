@@ -1,30 +1,34 @@
-package chatClient.presentation;
+package chatClient.presentation.Controller;
 
 import chatClient.logic.ServiceProxy;
+import chatClient.presentation.Model.Model;
+import chatClient.presentation.View.View;
+
 import chatProtocol.Candidato;
 import chatProtocol.Lista_Candidatos;
 import chatProtocol.Message;
 import chatProtocol.User;
 
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Controller  {
     View view;
     Model model;
     ServiceProxy localService;
-    Window_Listener windowListener;
+    private Window_Listener windowListener;
+    private Button_Listener button_listener;
     
-    public Controller(View view, Model model) throws Exception {
-        this.view = view;
-        this.model = model;
+    public Controller() throws Exception {
+
+
+        this.view = new View(this);;
+        this.model = new Model();
         localService = (ServiceProxy)ServiceProxy.instance();
-        localService.setController(this);
-        view.setController(this);
+        localService.setController(this);;
         view.setModel(model);
         this.init_window_listener();
+        this.init_button_listener();
         User u = new User();
         this.login(u);
     }
@@ -32,6 +36,14 @@ public class Controller  {
     public void init_window_listener(){
         windowListener = new Window_Listener(this);
         view.getWindow().addWindowListener(windowListener);
+    }
+
+    public void init_button_listener(){
+
+        button_listener = new Button_Listener(this);
+        view.getBtn_agregar().addActionListener(button_listener);
+        view.getBtn_votar().addActionListener(button_listener);
+
     }
 
     public void login(User u) throws Exception{
@@ -113,7 +125,7 @@ public class Controller  {
     }
         
     public void deliver(String message){
-        model.messages.add(message);
+        model.getMessages().add(message);
         System.out.println("Se envio este mensaje: " + message);
         model.commit(Model.CHAT);       
     }
@@ -149,28 +161,13 @@ public class Controller  {
         }
     }
 
-
-
     public View getView() { return view;}
 
-    /*@Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Action Performed");
-        switch (e.getActionCommand()) {
-            case "Agregar": {
-                System.out.println("Se ejecuto agregar\n");
-                this.agregarCandidato();
-                break;
-            }
-            case "Color": {
+    public Window_Listener getWindowListener() {
+        return windowListener;
+    }
 
-                break;
-            }
-            case "Voto": {
-
-                break;
-            }
-            default: break;
-        }
-    }*/
+    public Button_Listener getButton_listener() {
+        return button_listener;
+    }
 }
