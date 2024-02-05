@@ -5,51 +5,83 @@ import chatClient.presentation.Controller.Controller;
 import chatClient.presentation.Model.Model;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
 
-public class View implements Observer {
+public class View extends JFrame {
     private JPanel panel;
-    private JTable table_candidatos;
-    private JButton btn_votar;
-    private JTextField txf_id;
-    private JTextField txf_nombre;
-    private JButton btn_color;
-    private JButton btn_agregar;
-    private JLabel lb_nombre;
-    private JLabel lb_id;
-    private JFrame window;
+    private JButton btnPoner;
+    private JButton btnA1;
+    private JButton btnA2;
+    private JButton btnA3;
+    private JButton btnA4;
+    private JButton btnA5;
+    private JButton btnA6;
+    private JButton btnB1;
+    private JButton btnB2;
+    private JButton btnB3;
+    private JButton btnB4;
+    private JButton btnB5;
+    private JButton btnB6;
+    private JButton btnC1;
+    private JButton btnC2;
+    private JButton btnC3;
+    private JButton btnC4;
+    private JButton btnC5;
+    private JButton btnC6;
+    private JButton btnD1;
+    private JButton btnD2;
+    private JButton btnD3;
+    private JButton btnD4;
+    private JButton btnD5;
+    private JButton btnD6;
+    private JButton btnE1;
+    private JButton btnE2;
+    private JButton btnE3;
+    private JButton btnE4;
+    private JButton btnE5;
+    private JButton btnE6;
+    private JButton btnF1;
+    private JButton btnF2;
+    private JButton btnF3;
+    private JButton btnF4;
+    private JButton btnF5;
+    private JButton btnG6;
+    private JButton btnG1;
+    private JButton btnG2;
+    private JButton btnG3;
+    private JButton btnG4;
+    private JButton btnG5;
+    private JButton btnF6;
+    private JComboBox cmOption;
+    private JLabel lbA;
+    private JLabel lbB;
+    private JLabel lb_C;
+    private JLabel lb_D;
+    private JLabel lb_E;
+    private JLabel lb_F;
+    private JLabel lb_G;
+    private JLabel lbPlayer;
+    private JComboBox cm_row;
     Model model;
     Controller controller;
 
-    public View(Controller controller) {
+    public View(Controller controller)  {
         panel.setVisible(true);
-        //Application.window.getRootPane().setDefaultButton(login);
-        //bodyPanel.setVisible(false);
-
-        //DefaultCaret caret = (DefaultCaret) messages.getCaret();
-        //caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        this.window = new JFrame();
-        window.setSize(700,500);
-        window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        window.setTitle("VOTACION");
+        this.setSize(700,500);
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.setTitle("CONECTA 4");
         try {
-            window.setIconImage((new ImageIcon(Application.class.getResource("/logo.png"))).getImage());
+            this.setIconImage((new ImageIcon(Application.class.getResource("/logo.png"))).getImage());
         } catch (Exception e) {}
         this.controller = controller;
-        window.setContentPane(panel);
-        window.setVisible(true);
-        this.initTable();
+        this.setContentPane(panel);
+        this.setVisible(true);
         //this.initButtons(); //creo que por posicion y el flujo que no funciona asi
 
     }
 
     public void setModel(Model model) {
         this.model = model;
-        model.addObserver(this);
+        //model.addObserver(this);
     }
 
     public void setController(Controller controller) {
@@ -64,92 +96,21 @@ public class View implements Observer {
     String senderStyle = "background-color:#c2f0c2;margin-left:30px; margin-right:5px;margin-top:3px; padding:2px; border-radius: 25px;";
     String receiverStyle = "background-color:white; margin-left:5px; margin-right:30px; margin-top:3px; padding:2px;";
 
-    @Override
-    public void update(Observable o, Object arg) {
-        System.out.println("Se ejecuto el metodo uptade en la vista");
-    }
 
     public void lanzar_mensaje(String msg){
-        JOptionPane.showMessageDialog(window, msg, "Informacion", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, msg, "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void limpiar_interfaz(){
-        txf_id.setText("");
-        txf_nombre.setText("");
-        table_candidatos.clearSelection();
+        cmOption.setSelectedItem("");
     }
 
-    private void initTable(){
-        DefaultTableModel modelo = new DefaultTableModel();
-
-        modelo.addColumn("Numero");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Votos");
-
-        table_candidatos.setModel(modelo);
-        table_candidatos.setVisible(true);
+    public JButton getBtnPoner() {
+        return btnPoner;
+    }
+    public JComboBox getCmOption() {
+        return cmOption;
     }
 
-    public void initButtons(){
-        btn_agregar.addActionListener(controller.getButton_listener());
-
-        btn_votar.addActionListener(controller.getButton_listener());
-    }
-
-
-/*
-    public void update(java.util.Observable updatedModel, Object properties) {
-
-        int prop = (int) properties;
-        if (model.getCurrentUser() == null) {
-            Application.window.setTitle("CHAT");
-            //loginPanel.setVisible(true);
-            //Application.window.getRootPane().setDefaultButton(login);
-            //bodyPanel.setVisible(false);
-        } else {
-            Application.window.setTitle(model.getCurrentUser().getNombre().toUpperCase());
-            //loginPanel.setVisible(false);
-            //bodyPanel.setVisible(true);
-            //Application.window.getRootPane().setDefaultButton(post);
-            if ((prop & Model.CHAT) == Model.CHAT) {
-                //this.messages.setText("");
-                String text = "";
-                for (Message m : model.getMessages()) {
-                    if (m.getSender().equals(model.getCurrentUser())) {
-                        text += ("Me:" + m.getMessage() + "\n");
-                    } else {
-                        text += (m.getSender().getNombre() + ": " + m.getMessage() + "\n");
-                     }
-                }
-                //this.messages.setText(text);
-            }
-        }
-        panel.validate();
-    }*/
-
-    public JTable getTable_candidatos() {
-        return table_candidatos;
-    }
-
-    public JButton getBtn_votar() {
-        return btn_votar;
-    }
-
-    public JTextField getTxf_id() {
-        return txf_id;
-    }
-
-    public JTextField getTxf_nombre() {
-        return txf_nombre;
-    }
-
-    public JButton getBtn_color() {
-        return btn_color;
-    }
-
-    public JButton getBtn_agregar() {
-        return btn_agregar;
-    }
-
-    public JFrame getWindow() { return window;  }
+    public JLabel getLbPlayer() {return lbPlayer;}
 }

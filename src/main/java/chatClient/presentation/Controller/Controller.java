@@ -4,10 +4,7 @@ import chatClient.logic.ServiceProxy;
 import chatClient.presentation.Model.Model;
 import chatClient.presentation.View.View;
 
-import chatProtocol.Candidato;
-import chatProtocol.Lista_Candidatos;
-import chatProtocol.Message;
-import chatProtocol.User;
+import chatProtocol.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -18,9 +15,9 @@ public class Controller  {
     ServiceProxy localService;
     private Window_Listener windowListener;
     private Button_Listener button_listener;
+    private int numeroWorker;
     
     public Controller() throws Exception {
-
 
         this.view = new View(this);;
         this.model = new Model();
@@ -31,28 +28,37 @@ public class Controller  {
         this.init_button_listener();
         User u = new User();
         this.login(u);
+        this.initCBopciones();
+        localService.solicitar_numero_worker();
+
     }
 
     public void init_window_listener(){
         windowListener = new Window_Listener(this);
-        view.getWindow().addWindowListener(windowListener);
+        view.addWindowListener(windowListener);
     }
 
     public void init_button_listener(){
 
         button_listener = new Button_Listener(this);
-        view.getBtn_agregar().addActionListener(button_listener);
-        view.getBtn_votar().addActionListener(button_listener);
+        view.getBtnPoner().addActionListener(button_listener);
 
     }
 
-    public void login(User u) throws Exception{
-        User logged=ServiceProxy.instance().login(u);
-        model.setCurrentUser(logged);
-        model.commit(Model.USER);
-        ServiceProxy.instance().inicializar_servidor();
+    public void login(User u){
+        try {
+            User logged = ServiceProxy.instance().login(u);
+            model.setCurrentUser(logged);
+            model.commit(Model.USER);
+            ServiceProxy.instance().inicializar_servidor();
+        }catch (Exception ex){
+            view.lanzar_mensaje("Ya hay 3 jugadores conectados\n");
+            System.exit(0);
+        }
     }
 
+
+/*
     public void agregarCandidato(){
         try {
             Message message = new Message();
@@ -69,6 +75,34 @@ public class Controller  {
         view.limpiar_interfaz();
     }
 
+ */
+
+    public void ponerFicha(){
+        try {
+            Message message = new Message();
+            //message.setMessage(text);
+            Position obj = this.generar_ficha();
+            //if (model.getLista_candidatos().existAlready(obj.getId()))
+                //throw new Exception("Este cantidado ya existe\n");
+            message.setSender(model.getCurrentUser());
+            ServiceProxy.instance().enviar_ficha(obj);
+            model.commit(Model.CHAT);
+        }catch (Exception ex){
+            view.lanzar_mensaje(ex.getMessage());
+        }
+        view.limpiar_interfaz();
+    }
+
+    public void initCBopciones(){
+        view.getCmOption().addItem("A");
+        view.getCmOption().addItem("B");
+        view.getCmOption().addItem("C");
+        view.getCmOption().addItem("D");
+        view.getCmOption().addItem("E");
+        view.getCmOption().addItem("F");
+        view.getCmOption().addItem("G");
+    }
+/*
     public void efectuarVoto(){
 
         Message message = new Message();
@@ -98,19 +132,35 @@ public class Controller  {
 
     public void validar_excepciones() {
         try {
-            if (view.getTxf_id().getText().equals("") || view.getTxf_nombre().getText().equals("")) {
-                throw new Exception("Campos Vacios - Por favor verifique");
-            }
+            //write code--------------------------------------------------------------------------
         }catch (Exception ex){
             view.lanzar_mensaje(ex.getMessage());
         }
     }
+*/
+    public Position generar_ficha() {
+        String op = String.valueOf(view.getCmOption().getSelectedItem());
+        if(op.equals("")){
+            System.out.println("VACIO\n");
+        }
+        int column = (int) this.obtenerColumn(op);
+        //validar_excepciones();
+        return new Position(column, "gamed", numeroWorker);
+    }
 
-    public Candidato generar_candidato() {
-        String id = view.getTxf_id().getText();
-        String nombre = view.getTxf_nombre().getText();
-        validar_excepciones();
-        return new Candidato(id, nombre, 0);
+    public int obtenerColumn(String op){
+        int r= -1;
+        switch (op){
+            case "A": r = 0; break;
+            case "B": r = 1; break;
+            case "C": r = 2; break;
+            case "D": r = 3; break;
+            case "E": r = 4; break;
+            case "F": r = 5; break;
+            case "G": r = 6; break;
+            default: break;
+        }
+        return r;
     }
 
     public void logout(){
@@ -127,6 +177,7 @@ public class Controller  {
     public void deliver(String message){
         model.getMessages().add(message);
         System.out.println("Se envio este mensaje: " + message);
+        view.lanzar_mensaje(message);
         model.commit(Model.CHAT);       
     }
     public void agregar_candidato_lista(Candidato obj){
@@ -154,11 +205,7 @@ public class Controller  {
     }
 
     public void recargar_tabla(){
-        try {
-            model.recargar_tabla(view.getTable_candidatos());
-        }catch (Exception ex){
-            System.out.println("Excepcion es : " + ex.getMessage());
-        }
+        //
     }
 
     public View getView() { return view;}
@@ -169,5 +216,34 @@ public class Controller  {
 
     public Button_Listener getButton_listener() {
         return button_listener;
+    }
+
+    public void setNumeroWorker(int num){
+        this.numeroWorker = num;
+        System.out.println("Este es ni numero de worker "+ numeroWorker);
+        view.lanzar_mensaje("Eres el Player: "+numeroWorker);
+        this.initTurno();
+        view.getLbPlayer().setText("Player "+numeroWorker);
+    }
+
+    public void initTurno(){
+        if (numeroWorker==2){
+            view.getCmOption().setEnabled(false);
+            view.getBtnPoner().setEnabled(false);
+        }
+        if(numeroWorker==1){
+            view.getCmOption().setEnabled(true);
+            view.getBtnPoner().setEnabled(true);
+        }
+    }
+
+    public void changeTurno(int numW){
+        if(numeroWorker!=numW){
+            view.getCmOption().setEnabled(true);
+            view.getBtnPoner().setEnabled(true);
+        }else{
+            view.getCmOption().setEnabled(false);
+            view.getBtnPoner().setEnabled(false);
+        }
     }
 }

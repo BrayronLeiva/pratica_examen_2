@@ -12,13 +12,15 @@ public class Worker {
     ObjectOutputStream out;
     IService service;
     User user;
+    int numeroWorker;
 
-    public Worker(Server srv, ObjectInputStream in, ObjectOutputStream out, User user, IService service) {
+    public Worker(Server srv, ObjectInputStream in, ObjectOutputStream out, User user, IService service, int num) {
         this.srv=srv;
         this.in=in;
         this.out=out;
         this.user=user;
         this.service=service;
+        this.numeroWorker =num;
     }
 
     boolean continuar;    
@@ -46,8 +48,8 @@ public class Worker {
         try {
             int r = in.readInt();
             if (Protocol.SEND_LISTA_CANTIDADOS == r) {
-                out.writeObject(service.obtener_lista_candidatos());
-                out.flush();
+                //out.writeObject(service.obtener_lista_candidatos());
+                //out.flush();
             }
         }catch (Exception ex){
             System.out.println("Excepcion: " + ex.getMessage());
@@ -64,6 +66,7 @@ public class Worker {
                 case Protocol.LOGOUT:
                     try {
                         srv.remove(user);
+                        service.inicializar_servidor();
                         //service.logout(user); //nothing to do
                     } catch (Exception ex) {}
                     stop();
@@ -73,14 +76,14 @@ public class Worker {
                             System.out.println("Se tiene que agregar un candidato");
                             Candidato obj = (Candidato) in.readObject();
                             System.out.println(obj.getNombre());
-                            service.agregar_cantidato(obj);
+                            //service.agregar_cantidato(obj);
                             srv.add_candidato_lista_clientes(new Candidato(obj.getId(), obj.getNombre(),obj.getVotos()));
                         } catch (Exception ex) {}
                         break;
                     case Protocol.SEND_LISTA_CANTIDADOS:
                         try {
-                            Lista_Candidatos list = service.obtener_lista_candidatos();
-                            srv.set_lista_candidatos_clientes(list);
+                            //Lista_Candidatos list = service.obtener_lista_candidatos();
+                            //srv.set_lista_candidatos_clientes(list);
                         } catch (Exception ex) {}
                         break;
                     case Protocol.POST:
@@ -97,12 +100,40 @@ public class Worker {
                         //Message message=null;
                         try {
                             String id = (String) in.readObject();
-                            service.efectuar_voto(id);
-                            Candidato obj = service.obtener_cantidato_x_id(id);
-                            System.out.println("Votos de candidato que envio " + obj.getVotos());
-                            srv.uptade_candidato_lista_clientes(new Candidato(obj.getId(),obj.getNombre(),obj.getVotos()));
+                            //service.efectuar_voto(id);
+                            //Candidato obj = service.obtener_cantidato_x_id(id);
+                            //System.out.println("Votos de candidato que envio " + obj.getVotos());
+                            //srv.uptade_candidato_lista_clientes(new Candidato(obj.getId(),obj.getNombre(),obj.getVotos()));
                         } catch (Exception ex) {}
                         break;
+                    case Protocol.REQUEST_NUMERO_WORKER:
+                        try {
+                            //srv.send_numero_worker(numeroWorker);
+                            this.send_numero_worker(numeroWorker); //ya que es para cada usuario
+                        } catch (Exception ex) {}
+                        break;
+                    case Protocol.ENVIAR_FICHA:
+                        try {
+                            if(srv.getCurrent_num_worker()<2){
+                                srv.deliver("Deben De Haber 2 Jugadores Conectado Para Jugar\n");
+                                Position obj = (Position) in.readObject();
+                            }else {
+
+                                System.out.println("Se tiene que agregar una ficha");
+                                Position obj = (Position) in.readObject();
+                                //System.out.println(obj.getState());
+                                service.enviar_ficha(obj);
+                                String game = service.juegoGanado();
+                                if (!game.equals("")) {
+                                    srv.deliver(game);
+                                }
+                                srv.sendPlayerPlayed(obj.getNumW());
+
+                                //srv.add_candidato_lista_clientes(new Candidato(obj.getId(), obj.getNombre(),obj.getVotos()));
+                            }
+                        } catch (Exception ex) {}
+                        break;
+
 
                 }
                 out.flush();
@@ -110,6 +141,27 @@ public class Worker {
                 System.out.println(ex);
                 continuar = false;
             }                        
+        }
+    }
+    public void send_numero_worker(int numeroWorker){
+        try {
+            System.out.println("Se entro al deliver del worker");
+            out.writeInt(Protocol.SEND_NUMERO_WORKER);//oiga estoyenviando un deliver
+            out.writeInt(numeroWorker);
+            out.flush();
+            //aqui entrega solo a su propio cliente sin tener que propagar a todos
+        } catch (IOException ex) {
+        }
+    }
+
+    public void sendPlayerPlayed(int numeroWorker){
+        try {
+            System.out.println("Se entro al deliver del worker");
+            out.writeInt(Protocol.SEND_PLAYER_PLAYED);//oiga estoyenviando un deliver
+            out.writeInt(numeroWorker);
+            out.flush();
+            //aqui entrega solo a su propio cliente sin tener que propagar a todos
+        } catch (IOException ex) {
         }
     }
     
@@ -150,5 +202,13 @@ public class Worker {
         }catch (Exception ex){
             System.out.println("Excepcion: " + ex.getMessage());
         }
+    }
+
+    public int getNumeroWorker() {
+        return numeroWorker;
+    }
+
+    public void setNumeroWorker(int numeroWorker) {
+        this.numeroWorker = numeroWorker;
     }
 }

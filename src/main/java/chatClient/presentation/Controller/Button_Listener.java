@@ -15,9 +15,9 @@ public class Button_Listener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         switch (e.getActionCommand()) {
-            case "Agregar": {
-                System.out.println("Se ejecuto agregar\n");
-                controller.agregarCandidato();
+            case "Poner": {
+                System.out.println("Se ejecuto poner\n");
+                controller.ponerFicha();
                 break;
             }
             case "Color": {
@@ -25,7 +25,7 @@ public class Button_Listener implements ActionListener {
                 break;
             }
             case "Votar": {
-                controller.efectuarVoto();
+                //controller.efectuarVoto();
                 break;
             }
             default: break;

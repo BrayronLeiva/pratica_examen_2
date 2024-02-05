@@ -16,7 +16,7 @@ public class Window_Listener implements WindowListener {
     public void windowClosing(WindowEvent e) {
         try {
             controller.logout();
-            JFrame frame = controller.getView().getWindow();
+            JFrame frame = controller.getView();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.dispose();
 

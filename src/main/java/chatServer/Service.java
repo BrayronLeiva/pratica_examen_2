@@ -15,10 +15,17 @@ public class Service implements IService{
         // if wants to save messages, ex. recivier no logged on
     }
 
-    @Override
+   // @Override
     public void agregar_cantidato(Candidato obj) {
-        data.getLista_candidatos().add(obj);
-        data.imprimir_candidatos();
+        //data.getLista_candidatos().add(obj);
+        //data.imprimir_candidatos();
+    }
+
+    @Override
+    public void enviar_ficha(Position obj) {
+        System.out.println("Se entro a agregar ficha");
+        System.out.println(data.colocarFicha(obj));
+        data.imprimirTablero();
     }
 
     public User login(User p) throws Exception{
@@ -29,23 +36,40 @@ public class Service implements IService{
         return p;
     }
 
-    public Lista_Candidatos obtener_lista_candidatos(){
+    /*public Lista_Candidatos obtener_lista_candidatos(){
         return data.getLista_candidatos();
     }
 
-    @Override
-    public void inicializar_servidor() {}
+     */
 
     @Override
+    public void inicializar_servidor() { //solo cuando se reinicia al inicio es el cosntructor de data
+        data.inicializarTablero();
+    }
+
+    @Override
+    public String juegoGanado() {
+        String game = data.juegoGanado();
+        if (!game.equals("")){
+            data.inicializarTablero();
+            return game;
+        }
+        return "";
+        //data.juegoGanado();
+    }
+
+   /* @Override
     public void efectuar_voto(String id) {
         data.efectuar_voto(id);
         data.imprimir_candidatos();
     }
 
+    */
+
     public void logout(User p) throws Exception{
         //nothing to do
     }
-    public Candidato obtener_cantidato_x_id(String id) {
+    /*public Candidato obtener_cantidato_x_id(String id) {
         return data.seleccionar_candidato(id);
-    }
+    }*/
 }

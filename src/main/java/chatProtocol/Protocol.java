@@ -22,4 +22,10 @@ public class Protocol {
     public static final int VOTO_EFECTUADO= 400;
     public static final int UPTADE_CANTIDATO_LISTA=500;
 
+    //----------------------------------New Game
+
+    public static final int ENVIAR_FICHA = 1000;
+    public static final int REQUEST_NUMERO_WORKER = 1001;
+    public static final int SEND_NUMERO_WORKER = 1002;
+    public static final int SEND_PLAYER_PLAYED = 1003;
 }

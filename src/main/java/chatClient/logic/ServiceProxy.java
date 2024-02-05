@@ -52,7 +52,12 @@ public class ServiceProxy implements IService{
             System.out.println("Excepcion: " + ex.getMessage());
         }
     }
-    
+
+    @Override
+    public String juegoGanado() {
+        return "";
+    }
+
     public User login(User u) throws Exception{
         connect();
         try {
@@ -93,7 +98,17 @@ public class ServiceProxy implements IService{
         }   
     }
 
-    @Override
+    public void solicitar_numero_worker() {
+        try {
+            out.writeInt(Protocol.REQUEST_NUMERO_WORKER);
+            out.flush();
+
+        } catch (Exception ex) {
+            System.out.println("Excepcion: " + ex.getMessage());
+        }
+    }
+
+    //@Override
     public void agregar_cantidato(Candidato obj) {
         try {
             out.writeInt(Protocol.ADD_CANTIDATO);
@@ -105,6 +120,17 @@ public class ServiceProxy implements IService{
     }
 
     @Override
+    public void enviar_ficha(Position obj) {
+        try {
+            out.writeInt(Protocol.ENVIAR_FICHA);
+            out.writeObject(obj);
+            out.flush();
+        } catch (IOException ex) {
+
+        }
+    }
+
+    //@Override
     public void efectuar_voto(String id) {
         try {
             out.writeInt(Protocol.VOTO_EFECTUADO);
@@ -115,10 +141,10 @@ public class ServiceProxy implements IService{
         }
     }
 
-    @Override
+    //@Override
     public Candidato obtener_cantidato_x_id(String id) {    return null;}
 
-    @Override
+    //@Override
     public Lista_Candidatos obtener_lista_candidatos() {
         return null;
     }
@@ -185,6 +211,26 @@ public class ServiceProxy implements IService{
                     }
                     break;
                 }
+                case Protocol.SEND_NUMERO_WORKER: {
+                    try {
+                        System.out.println("Seteando worker\n\n\n\n\n\n\n");
+                        int numeroWorker = (int) in.readInt();
+                        set_numero_worker(numeroWorker);
+                    } catch (Exception ex) {
+                        System.out.println("Excepcion: " + ex.getMessage());
+                    }
+                    break;
+                }
+                case Protocol.SEND_PLAYER_PLAYED: {
+                    try {
+                        System.out.println("Cambiando worker player\n");
+                        int numeroWorker = (int) in.readInt();
+                        sendPlayerPlayed(numeroWorker);
+                    } catch (Exception ex) {
+                        System.out.println("Excepcion: " + ex.getMessage());
+                    }
+                    break;
+                }
                 } //switch
                 out.flush();
             } catch (IOException  ex) {
@@ -200,6 +246,23 @@ public class ServiceProxy implements IService{
          }
       );
    }
+
+    private void sendPlayerPlayed( final int numW ){
+        SwingUtilities.invokeLater(new Runnable(){
+                                       public void run(){
+                                           controller.changeTurno(numW);
+                                       }
+                                   }
+        );
+    }
+
+    private void set_numero_worker(final int num) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                controller.setNumeroWorker(num);
+            }
+        });
+    }
 
     private void agregar_candidato_lista( final Candidato obj ){
         SwingUtilities.invokeLater(new Runnable(){
