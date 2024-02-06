@@ -90,6 +90,23 @@ public class Server {
         return user;
     }
 
+    public void enviar_ganador(String message){
+        for(Worker wk:workers){
+            if (wk.numeroPlayer==1 || wk.numeroPlayer==2){
+                wk.enviar_ganador(message);
+            }
+        }
+    }
+
+    public void resetUI(int nump){
+        for(Worker wk:workers){
+            if(wk.numeroPlayer!=nump){
+                wk.resetUI();
+            }
+
+        }
+    }
+
     public void all_to_lobby(){
         for(Worker wk:workers){
             wk.all_to_lobby();
@@ -139,6 +156,14 @@ public class Server {
         for(Worker wk:workers) if(wk.user.equals(u)){workers.remove(wk);break;}
         System.out.println("Quedan: " + workers.size());
         reasignar();
+    }
+
+    public void win_easy(int nPl){
+        for(Worker wk:workers){
+            if(wk.numeroPlayer==nPl){
+                wk.win_easy();
+            }
+        }
     }
 
     public void reasignar(){

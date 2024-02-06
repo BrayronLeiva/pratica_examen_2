@@ -17,7 +17,7 @@ public class Controller  {
     ServiceProxy localService;
     private Window_Listener windowListener;
     private Button_Listener button_listener;
-    private int numeroWorker;
+    private int numeroWorker; //es num de player
     
     public Controller() throws Exception {
        // this.app = new AplicacionVista(this)
@@ -31,6 +31,7 @@ public class Controller  {
         this.init_button_listener();
         //this.inicioSecion();
         this.initCBopciones();
+        numeroWorker = 0;
     }
 
     public void validar_excepciones() throws Exception{
@@ -67,7 +68,43 @@ public class Controller  {
     public void salirJuego(){
         ServiceProxy.instance().salirJuego(model.getCurrentUser(), numeroWorker);
         //ServiceProxy.instance().solicitarTablaUsuarios();
+        //this.limpiarInterfaz();
         view.entrarListaEspera();
+        numeroWorker = 0;
+    }
+
+    public void win_easy(){
+        view.lanzar_mensaje("El jugador Contrario Se Desconecto\n              Ganaste");
+        this.limpiarInterfaz();
+        model.getCurrentUser().setState("Espera");
+        ServiceProxy.instance().uptadeWait(model.getCurrentUser());
+        view.entrarListaEspera();
+        numeroWorker = 0;
+
+    }
+
+    public void limpiarInterfaz(){
+        view.getBtn0_0().setText("");
+        view.getBtn1_0().setText("");
+        view.getBtn2_0().setText("");
+        view.getBtn0_1().setText("");
+        view.getBtn1_1().setText("");
+        view.getBtn2_1().setText("");
+        view.getBtn0_2().setText("");
+        view.getBtn1_2().setText("");
+        view.getBtn2_2().setText("");
+        //
+        Color nuevoColor = new Color(230, 245, 255);
+
+        view.getBtn0_0().setBackground(nuevoColor);
+        view.getBtn1_0().setBackground(nuevoColor);
+        view.getBtn2_0().setBackground(nuevoColor);
+        view.getBtn0_1().setBackground(nuevoColor);
+        view.getBtn1_1().setBackground(nuevoColor);
+        view.getBtn2_1().setBackground(nuevoColor);
+        view.getBtn0_2().setBackground(nuevoColor);
+        view.getBtn1_2().setBackground(nuevoColor);
+        view.getBtn2_2().setBackground(nuevoColor);
     }
 
     public void all_to_lobby(){
@@ -83,6 +120,7 @@ public class Controller  {
     public void ready(){
         model.getCurrentUser().setState("Listo");
         ServiceProxy.instance().uptade(model.getCurrentUser(), numeroWorker);
+        this.limpiarInterfaz();
         ServiceProxy.instance().solicitarTablaUsuarios();
     }
 
@@ -101,7 +139,7 @@ public class Controller  {
             ServiceProxy.instance().uptadeWait(u);
             System.out.println("El usuario seleccionó No.");
         }
-        ServiceProxy.instance().solicitarTablaUsuarios();
+        //ServiceProxy.instance().solicitarTablaUsuarios();
 
     }
 
@@ -293,6 +331,22 @@ public class Controller  {
         view.lanzar_mensaje(message);
         model.commit(Model.CHAT);       
     }
+
+    public void deliver_players(String message){
+        //System.out.println("Este es mi numero de worker " + numeroWorker + "\n\n\n\n\n\n");
+        if(numeroWorker!=0) {
+            model.getMessages().add(message);
+            //System.out.println("Se envio este mensaje: " + message);
+            view.lanzar_mensaje(message);
+            model.commit(Model.CHAT);
+        }
+        model.getCurrentUser().setState("Espera");
+        ServiceProxy.instance().uptadeWait(model.getCurrentUser());
+        limpiarInterfaz();
+        numeroWorker = 0;
+        view.entrarListaEspera();
+    }
+
     public void agregar_candidato_lista(Candidato obj){
         model.agregar_candidato(obj);
         model.imprimir_lista_candidatos();

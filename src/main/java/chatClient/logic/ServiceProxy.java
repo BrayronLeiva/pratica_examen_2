@@ -351,6 +351,32 @@ public class ServiceProxy implements IService{
                         }
                         break;
                     }
+                    case Protocol.WIN_EASY: {
+                        try {
+                            this.win_easy();
+
+                        } catch (Exception ex) {
+                            System.out.println("Excepcion: " + ex.getMessage());
+                        }
+                        break;
+                    }
+                    case Protocol.RESET_UI: {
+                        try {
+                            this.reset_ui();
+
+                        } catch (Exception ex) {
+                            System.out.println("Excepcion: " + ex.getMessage());
+                        }
+                        break;
+                    }
+                    case Protocol.DELIVER_PLAYERS: {
+                        try {
+                            String message = (String) in.readObject();
+                            deliver_players(message);
+                        } catch (ClassNotFoundException ex) {
+                        }
+                        break;
+                    }
 
                 } //switch
                 out.flush();
@@ -358,6 +384,32 @@ public class ServiceProxy implements IService{
                 continuar = false;
             }                        
         }
+    }
+
+    private void deliver_players( final String message ){
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+                                           controller.deliver_players(message);
+                                       }
+        });
+    }
+
+    private void reset_ui(){
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run() {
+                controller.limpiarInterfaz();
+            }
+        });
+    }
+
+    private void win_easy(){
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run() {
+
+                controller.win_easy();
+            }          }
+
+        );
     }
 
    private void deliver( final String message ){

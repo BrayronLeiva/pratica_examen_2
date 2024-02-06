@@ -23,6 +23,7 @@ public class Worker {
         this.user=user;
         this.service=service;
         this.numeroWorker =num;
+        this.numeroPlayer = 0;
     }
 
     boolean continuar;    
@@ -139,7 +140,9 @@ public class Worker {
                                 srv.fichaCorrecta(r, new Position(obj.getRow(), obj.getColumn(),obj.getState(), obj.getNumW()));
                                 String game = service.juegoGanado();
                                 if (!game.equals("")) {
-                                    srv.deliver(game);
+                                    srv.current_numero_player=0;
+                                    service.inicializar_servidor();
+                                    srv.enviar_ganador(game);
                                 }
                                 srv.sendPlayerPlayed(obj.getNumW());
 
@@ -178,7 +181,9 @@ public class Worker {
                             }
                             //ListaUsers users = service.getListaPlayers();
                             //srv.send_lista_users(users); //ya que es para cada usuario
-                        } catch (Exception ex) {}
+                        } catch (Exception ex) {
+                            System.out.println(ex.getMessage());
+                        }
                         break;
                     case Protocol.UPTADE_WAIT_LISTA_USERS:
                         try {
@@ -203,7 +208,20 @@ public class Worker {
                             User obj = (User) in.readObject();
                             service.uptadeWait(obj);
                             //service.uptadeAllWait();
+                            System.out.println("Mi numero de Player es " + numeroPlayer);
+                            int winner = 0;
+                            if(srv.current_numero_player>=2) {
+                                if (numeroPlayer == 1) {
+                                    srv.win_easy(2);
+                                    winner = 2;
+                                } else if (numeroPlayer == 2) {
+                                    srv.win_easy(1);
+                                    winner =1;
+                                }
+                            }
+                            service.inicializar_servidor(); //inicializa tablero
                             srv.current_numero_player=0;
+                            srv.resetUI(winner);
                             //srv.all_to_lobby();
 
 
@@ -218,6 +236,30 @@ public class Worker {
                 System.out.println(ex);
                 continuar = false;
             }                        
+        }
+    }
+    public void enviar_ganador(String message){ //deliver personalizado
+        try {
+            out.writeInt(Protocol.DELIVER_PLAYERS);
+            out.writeObject(message);
+            out.flush();
+        } catch (IOException ex) {
+        }
+    }
+
+    public void resetUI(){
+        try {
+            out.writeInt(Protocol.RESET_UI);
+            out.flush();
+        } catch (IOException ex) {
+        }
+    }
+
+    public void win_easy(){
+        try {
+            out.writeInt(Protocol.WIN_EASY);
+            out.flush();
+        } catch (IOException ex) {
         }
     }
 

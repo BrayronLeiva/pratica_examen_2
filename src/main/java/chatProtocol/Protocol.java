@@ -37,4 +37,7 @@ public class Protocol {
     public static final int UPTADE_WAIT_LISTA_USERS = 1010;
     public static final int UPTADE_READY_LISTA_USERS = 1011;
     public static final int ALL_TO_LOBBY = 1012;
+    public static final int WIN_EASY = 1013;
+    public static final int RESET_UI = 1014;
+    public static final int DELIVER_PLAYERS = 1015;
 }
