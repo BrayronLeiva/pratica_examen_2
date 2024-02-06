@@ -43,7 +43,7 @@ public class Server {
                 out = new ObjectOutputStream(skt.getOutputStream() );
 
                 current_num_worker+=1;
-                if (current_num_worker>2){
+                /*if (current_num_worker>2){
                     try {
                         out.writeInt(Protocol.DELIVER);
                         out.writeObject("Ya hay 2 jugadores Conectados\n");
@@ -51,7 +51,7 @@ public class Server {
                     } catch (Exception ex) {}
                     continuar =false;
                     break;
-                }
+                }*/
 
                 System.out.println("Conexion Establecida...");
                 User user=this.login(in,out,service);
@@ -61,10 +61,14 @@ public class Server {
                 worker.start();
                 //worker.inicializar_cliente();
             }
-            catch (IOException | ClassNotFoundException ex) {}
+            catch (IOException | ClassNotFoundException ex) {
+                System.out.println(ex.getMessage());
+            }
             catch (Exception ex) {
                 try {
+                    System.out.println(ex.getMessage());
                     out.writeInt(Protocol.ERROR_LOGIN);
+                    out.writeObject(ex.getMessage());
                     out.flush();
                     skt.close();
                 } catch (IOException ex1) {}

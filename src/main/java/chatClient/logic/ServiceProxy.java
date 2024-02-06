@@ -105,6 +105,8 @@ public class ServiceProxy implements IService{
                 return u1;
             }
             else {
+                String issue = (String) in.readObject();
+                controller.lanzar_mensaje(issue);
                 disconnect();
                 throw new Exception("No remote user");
             }            

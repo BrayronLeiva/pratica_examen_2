@@ -136,11 +136,11 @@ public class Worker {
                     case Protocol.REQUEST_LISTA_USERS:
                         try {
                             //srv.send_numero_worker(numeroWorker);
-                            ListaUsers users = service.getListaPlayers();
-                            System.out.println("Imprimiendo Antes De Enviar");
-                            for (User obj: users.getUsers()) {
-                                System.out.println(obj.getNombre() + " " + obj.getState());
-                            }
+                            ListaUsers users = service.getListUsers();
+                            //System.out.println("Imprimiendo Antes De Enviar");
+                            //for (User obj: users.getUsers()) {
+                                //System.out.println(obj.getNombre() + " " + obj.getState());
+                            //}
                             ListaUsers newList = new ListaUsers();
                             for (User obj:users.getUsers()) {
                                 newList.getUsers().add(new User(obj.getNombre(), obj.getClave(), obj.getState()));

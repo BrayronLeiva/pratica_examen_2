@@ -34,7 +34,13 @@ public class Service implements IService{
         for(User u:data.getUsers().getUsers()) if(p.getNombre().equals(u.getNombre())&&p.getClave().equals(u.getClave())) {
             System.out.println("Ingresando Usuario "+ u.getNombre() + " " + u.getClave());
 
+            for (User e:data.getPlayers().getUsers()) {
+                if (e.getNombre().equals(p.getNombre())){
+                    throw new Exception("Este jugador se encuentra ya logeado\n");
+                }
+            }
             data.getPlayers().getUsers().add(new User(p.getNombre(), p.getClave(), "Espera"));
+
             u.setState("Espera");
             return p;
         }

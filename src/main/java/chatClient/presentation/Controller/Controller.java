@@ -315,4 +315,9 @@ public class Controller  {
             view.getBtn2_2().setEnabled(false);
         }
     }
+
+    public void lanzar_mensaje(String msg){
+        view.lanzar_mensaje(msg);
+    }
+
 }
