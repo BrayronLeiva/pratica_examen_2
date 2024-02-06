@@ -47,6 +47,16 @@ public class Data {
 
     }
 
+    public void removePlayer(User p){
+        for (int i = 0; i < players.getUsers().size();i++) {
+            User obj = players.getUsers().get(i);
+            if(obj.getNombre().equals(p.getNombre())){
+                players.getUsers().remove(i);
+                return;
+            }
+        }
+    }
+
     public void imprimirListaUsuarios(){
         System.out.println("IMPRIMIENDO LISTA DE USUARIOS DESDE DATA");
         for (User obj:users.getUsers()) {
@@ -77,6 +87,28 @@ public class Data {
     public void setUsers(List<User> users) {
         //this.users = users;
     }
+
+    public String players_ready(){
+        int cant = 0;
+        int nW1;
+        int nW2;
+        String nom1 = "";
+        String nom2 = "";
+        for (User u:users.getUsers()) {
+            if (u.getState().equals("Listo") && cant==0){
+                nom1 = u.getNombre();
+                cant++;
+            }
+            if(u.getState().equals("Listo")&& cant==1 && !nom1.equals(u.getNombre())){
+                nom2 = u.getNombre();
+                return nom1 + "-" + nom2;
+                //cant++;
+            }
+        }
+        return "";
+
+    }
+
 
     /*public Lista_Candidatos getLista_candidatos() {
         return lista_candidatos;
@@ -172,6 +204,45 @@ public class Data {
             if (obj.getNombre().equals(user.getNombre())){
                 obj.setState("Listo");
             }
+        }
+        //this.imprimirListaUsuarios();
+    }
+
+    public void uptade_down(User user){
+
+        for (User obj:users.getUsers()) {
+            if (obj.getNombre().equals(user.getNombre())){
+                obj.setState("Inactivo");
+            }
+        }
+        //this.imprimirListaUsuarios();
+    }
+
+    public void uptade_ready(User user){
+
+        for (User obj:users.getUsers()) {
+            if (obj.getNombre().equals(user.getNombre())){
+                obj.setState("Jugando");
+            }
+        }
+        System.out.println("IMPRIMIENDO DESDE UPTADE READY");
+        this.imprimirListaUsuarios();
+    }
+
+    public void uptade_wait(User user){
+
+        for (User obj:users.getUsers()) {
+            if (obj.getNombre().equals(user.getNombre())){
+                obj.setState("Espera");
+            }
+        }
+        //this.imprimirListaUsuarios();
+    }
+
+    public void uptade_all_wait(){
+
+        for (User obj:users.getUsers()) {
+            obj.setState("Espera");
         }
         //this.imprimirListaUsuarios();
     }

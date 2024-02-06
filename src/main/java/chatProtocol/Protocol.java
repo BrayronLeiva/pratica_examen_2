@@ -31,4 +31,10 @@ public class Protocol {
     public static final int REQUEST_LISTA_USERS = 1004;
     public static final int SEND_LISTA_USERS = 1005;
     public static final int UPTADE_LISTA_USERS = 1006;
+    public static final int LANZAR_PARTIDA = 1007;
+    public static final int FICHA_CORRECTA = 1008;
+    public static final int SALIR_JUEGO = 1009;
+    public static final int UPTADE_WAIT_LISTA_USERS = 1010;
+    public static final int UPTADE_READY_LISTA_USERS = 1011;
+    public static final int ALL_TO_LOBBY = 1012;
 }

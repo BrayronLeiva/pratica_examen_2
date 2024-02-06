@@ -26,6 +26,7 @@ public class View extends JFrame {
     private JButton btnPoner;
     private JComboBox cmOption;
     private JLabel lbPlayer;
+    private JButton btn_salir;
     private JComboBox cm_row;
     Model model;
     Controller controller;
@@ -37,7 +38,7 @@ public class View extends JFrame {
         panel.setVisible(false);
         this.setSize(700,500);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        this.setTitle("CONECTA 4");
+        this.setTitle("3 EN RAYA");
         try {
             this.setIconImage((new ImageIcon(Application.class.getResource("/logo.png"))).getImage());
         } catch (Exception e) {}
@@ -178,7 +179,7 @@ public class View extends JFrame {
 
     public JButton getBtnLogIn() {return login.getBtnLogIn();}
     public JButton getBtnListo() {return esperaView.getBtnListo();}
-
     public JButton getBtnStart() {return esperaView.getBtnStart();}
-
+    public JTextField getTxtMensajes() {return esperaView.getTxtMensajes();}
+    public JButton getBtn_salir() {return btn_salir;}
 }

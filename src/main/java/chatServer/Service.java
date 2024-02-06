@@ -24,10 +24,11 @@ public class Service implements IService{
     }
 
     @Override
-    public void enviar_ficha(Position obj) {
+    public boolean enviar_ficha(Position obj) {
         System.out.println("Se entro a agregar ficha");
-        System.out.println(data.colocarFicha(obj));
+        boolean r = data.colocarFicha(obj);
         data.imprimirTablero();
+        return r;
     }
 
     public User login(User p) throws Exception{
@@ -49,6 +50,8 @@ public class Service implements IService{
         //p.setNombre(p.getId());
         //return p;
     }
+
+
 
     /*public Lista_Candidatos obtener_lista_candidatos(){
         return data.getLista_candidatos();
@@ -84,6 +87,11 @@ public class Service implements IService{
         //return data.getPlayers();
     }
 
+    @Override
+    public void uptadeAllWait() {
+        data.uptade_all_wait();
+    }
+
     public ListaUsers getListUsers(){
         //data.imprimirListaUsuarios();
         data.imprimirListaPlayers();
@@ -106,8 +114,29 @@ public class Service implements IService{
     */
 
     public void logout(User p) throws Exception{
-        //nothing to do
+        data.removePlayer(p);
+        data.uptade_down(p);
     }
+    @Override
+    public void uptadeWait(User u){
+        data.uptade_wait(u);
+    }
+    @Override
+    public void uptadeReady(User user){
+        data.uptade_ready(user);
+    }
+    @Override
+    public String playersReady(){
+
+        String r =  data.players_ready();
+        System.out.println("LO QUE VOY A MANDAR: " + r);
+        if(!r.equals("")) {return r;}
+        return "";
+    }
+
+    @Override
+    public void salirJuego(User user, int i) {}
+
     /*public Candidato obtener_cantidato_x_id(String id) {
         return data.seleccionar_candidato(id);
     }*/

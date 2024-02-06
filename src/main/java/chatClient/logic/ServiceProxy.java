@@ -55,6 +55,17 @@ public class ServiceProxy implements IService{
         }
     }
 
+    public void salirJuego(User user, int nW){
+        try {
+            out.writeInt(Protocol.SALIR_JUEGO);
+            out.writeObject(user);
+            out.flush();
+
+        }catch (Exception ex){
+            System.out.println("Excepcion: " + ex.getMessage());
+        }
+    }
+
     public void solicitarTablaUsuarios(){
         try {
             out.writeInt(Protocol.REQUEST_LISTA_USERS);
@@ -75,6 +86,29 @@ public class ServiceProxy implements IService{
             System.out.println("Excepcion: " + ex.getMessage());
         }
     }
+    @Override
+    public void uptadeReady(User user){
+        try {
+            out.writeInt(Protocol.UPTADE_READY_LISTA_USERS);
+            out.writeObject(user);
+            out.flush();
+
+        }catch (Exception ex){
+            System.out.println("Excepcion: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void uptadeWait(User user) {
+        try {
+            out.writeInt(Protocol.UPTADE_WAIT_LISTA_USERS);
+            out.writeObject(user);
+            out.flush();
+
+        }catch (Exception ex){
+            System.out.println("Excepcion: " + ex.getMessage());
+        }
+    }
 
     @Override
     public ListaUsers getListUsers() {
@@ -82,9 +116,17 @@ public class ServiceProxy implements IService{
     }
 
     @Override
+    public String playersReady() {
+        return null;
+    }
+
+    @Override
     public ListaUsers getListaPlayers() {
         return null;
     }
+
+    @Override
+    public void uptadeAllWait() {}
 
     @Override
     public String juegoGanado() {
@@ -155,7 +197,7 @@ public class ServiceProxy implements IService{
     }
 
     @Override
-    public void enviar_ficha(Position obj) {
+    public boolean enviar_ficha(Position obj) {
         try {
             out.writeInt(Protocol.ENVIAR_FICHA);
             out.writeObject(obj);
@@ -163,6 +205,7 @@ public class ServiceProxy implements IService{
         } catch (IOException ex) {
 
         }
+        return true;
     }
 
     //@Override
@@ -266,19 +309,49 @@ public class ServiceProxy implements IService{
                     }
                     break;
                 }
-                    case Protocol.SEND_LISTA_USERS: {
-                        try {
-                            System.out.println("Seteando worker\n\n\n\n\n\n\n");
-                            ListaUsers list;
-                            list= (ListaUsers) in.readObject();
-                            //System.out.println(list.get(0).getState() + list.get(0).getNombre() + " IIII");
+                case Protocol.SEND_LISTA_USERS: {
+                    try {
+                        System.out.println("Seteando worker\n\n\n\n\n\n\n");
+                        ListaUsers list;
+                        list= (ListaUsers) in.readObject();
+                        //System.out.println(list.get(0).getState() + list.get(0).getNombre() + " IIII");
 
-                            uptadeListaUser(list);
+                        uptadeListaUser(list);
+                    } catch (Exception ex) {
+                        System.out.println("Excepcion: " + ex.getMessage());
+                    }
+                    break;
+                }
+                    case Protocol.LANZAR_PARTIDA: {
+                        try {
+                            String nom1 = (String) in.readObject();
+                            String nom2 = (String) in.readObject();
+                            lanzarPartida(nom1, nom2);
                         } catch (Exception ex) {
                             System.out.println("Excepcion: " + ex.getMessage());
                         }
                         break;
                     }
+                    case Protocol.FICHA_CORRECTA: {
+                        try {
+                           boolean r= (boolean) in.readObject();
+                           Position obj = (Position) in.readObject();
+                            fichaValida(r, obj);
+                        } catch (Exception ex) {
+                            System.out.println("Excepcion: " + ex.getMessage());
+                        }
+                        break;
+                    }
+                    case Protocol.ALL_TO_LOBBY: {
+                        try {
+                            this.all_to_lobby();
+
+                        } catch (Exception ex) {
+                            System.out.println("Excepcion: " + ex.getMessage());
+                        }
+                        break;
+                    }
+
                 } //switch
                 out.flush();
             } catch (IOException  ex) {
@@ -295,6 +368,32 @@ public class ServiceProxy implements IService{
          }
       );
    }
+    private void all_to_lobby( ){
+        SwingUtilities.invokeLater(new Runnable(){
+                                       public void run(){
+                                           controller.all_to_lobby();
+                                       }
+                                   }
+        );
+    }
+
+    private void fichaValida( final boolean r, final Position obj){
+        SwingUtilities.invokeLater(new Runnable(){
+                                       public void run(){
+                                           controller.fichaValida(r, obj);
+                                       }
+                                   }
+        );
+    }
+
+    private void lanzarPartida( final String nom1, final String nom2 ){
+        SwingUtilities.invokeLater(new Runnable(){
+                                       public void run(){
+                                           controller.lanzar_solicitud(nom1, nom2);
+                                       }
+                                   }
+        );
+    }
 
     private void sendPlayerPlayed( final int numW ){
         SwingUtilities.invokeLater(new Runnable(){

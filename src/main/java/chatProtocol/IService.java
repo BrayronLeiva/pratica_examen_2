@@ -9,7 +9,7 @@ public interface IService {
     public void logout(User u) throws Exception; 
     public void post(Message m);
    // public void agregar_cantidato(Candidato obj);
-    public void enviar_ficha(Position obj);
+    public boolean enviar_ficha(Position obj);
    // public Lista_Candidatos obtener_lista_candidatos();
     public void inicializar_servidor();
     //public void efectuar_voto(String id);
@@ -17,7 +17,12 @@ public interface IService {
     public String juegoGanado();
     public void solicitarTablaUsuarios();
     public ListaUsers getListaPlayers();
+    public void uptadeAllWait();
     public void uptade(User user, int i);
+    public void uptadeWait(User user);
+    public void uptadeReady(User user);
     public ListaUsers getListUsers();
+    public String playersReady();
+    public void salirJuego(User user, int i);
 
 }

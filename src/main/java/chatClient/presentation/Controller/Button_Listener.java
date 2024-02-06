@@ -80,6 +80,12 @@ public class Button_Listener implements ActionListener {
 
                 break;
             }
+            case "Salir": {
+                System.out.println("Se ejecuto salir\n");
+                controller.salirJuego();
+
+                break;
+            }
             default: break;
         }
 

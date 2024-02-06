@@ -8,14 +8,14 @@ public class ListaEsperaView {
     private JTable tableEspera;
     private JPanel panelEspera;
     private JButton btnListo;
-    private JTextField textField1;
+    private JTextField txtMensajes;
     private JButton btnStart;
 
     public ListaEsperaView() {
         panelEspera.setVisible(true);
         initTable();
         btnStart.setEnabled(false);
-        textField1.setEnabled(false);
+        txtMensajes.setEnabled(false);
     }
 
     public JTable getTableEspera() {
@@ -29,6 +29,8 @@ public class ListaEsperaView {
     public JButton getBtnListo() {return btnListo;}
 
     public JButton getBtnStart() {return btnStart;}
+
+    public JTextField getTxtMensajes() {return txtMensajes;}
 
     public void initTable(){
         // Inicializar el modelo de la tabla

@@ -16,13 +16,14 @@ public class Server {
     ServerSocket srv;
     List<Worker> workers;
     int current_num_worker;
-    
+    int current_numero_player;
     public Server() {
         try {
             srv = new ServerSocket(Protocol.PORT);
             workers =  Collections.synchronizedList(new ArrayList<Worker>());
             System.out.println("Servidor iniciado...");
             current_num_worker = 0;
+            current_numero_player = 0;
         } catch (IOException ex) {
         }
     }
@@ -89,6 +90,27 @@ public class Server {
         return user;
     }
 
+    public void all_to_lobby(){
+        for(Worker wk:workers){
+            wk.all_to_lobby();
+        }
+    }
+
+    public void fichaCorrecta(boolean r, Position obj){
+        for(Worker wk:workers){
+            wk.fichaCorrecta(r,obj);
+        }
+    }
+
+    public void lanzarPartida(String nom1, String nom2){
+
+        for(Worker wk:workers){
+            if(wk.getUser().getNombre().equals(nom1) || wk.getUser().getNombre().equals(nom2)) {
+                wk.lanzarPartida(nom1, nom2);
+            }
+        }
+    }
+
     public void sendPlayerPlayed(int numeroWorker){
         for(Worker wk:workers){
             wk.sendPlayerPlayed(numeroWorker);
@@ -145,5 +167,9 @@ public class Server {
 
     public int getCurrent_num_worker() {
         return current_num_worker;
+    }
+
+    public int getCurrent_numero_player() {
+        return current_numero_player;
     }
 }

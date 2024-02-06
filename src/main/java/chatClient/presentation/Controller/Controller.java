@@ -6,6 +6,8 @@ import chatClient.presentation.View.View;
 
 import chatProtocol.*;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,24 +33,47 @@ public class Controller  {
         this.initCBopciones();
     }
 
+    public void validar_excepciones() throws Exception{
+        if (view.obtenerUsuario().isEmpty() || view.obtenerClave().isEmpty()){
+            throw new Exception("Digite Sus Credenciales");
+        }
+    }
+
     public void inicioSecion(){
-        String user = view.obtenerUsuario();
-        String clave = view.obtenerClave();
+        try {
+            validar_excepciones();
+            String user = view.obtenerUsuario();
+            String clave = view.obtenerClave();
 
-        System.out.println("Iniciando " + user + clave);
+            System.out.println("Iniciando " + user + clave);
 
-        User u = new User(user, clave);
-        this.login(u);
-        //view.entrarJuego();
-        view.entrarListaEspera();
+            User u = new User(user, clave);
+            this.login(u);
+            //view.entrarJuego();
+            view.entrarListaEspera();
 
-        //localService.solicitar_numero_worker();
+            //localService.solicitar_numero_worker();
+        }catch (Exception ex){
+            view.lanzar_mensaje(ex.getMessage());
+        }
 
     }
 
     public void entrarJuego(){
         view.entrarJuego();
         localService.solicitar_numero_worker();
+    }
+
+    public void salirJuego(){
+        ServiceProxy.instance().salirJuego(model.getCurrentUser(), numeroWorker);
+        //ServiceProxy.instance().solicitarTablaUsuarios();
+        view.entrarListaEspera();
+    }
+
+    public void all_to_lobby(){
+        //view.lanzar_mensaje("Jugador");
+        view.entrarListaEspera();
+
     }
 
     public void uptadeTables(List<User> list){
@@ -59,6 +84,25 @@ public class Controller  {
         model.getCurrentUser().setState("Listo");
         ServiceProxy.instance().uptade(model.getCurrentUser(), numeroWorker);
         ServiceProxy.instance().solicitarTablaUsuarios();
+    }
+
+    public void lanzar_solicitud(String nom1, String nom2){
+        view.getTxtMensajes().setText("Player: " + nom1 + " vs " + "Player " + nom2);
+        int respuesta = JOptionPane.showConfirmDialog(view, "Player: " + nom1 + " vs " + "Player " + nom2 + "\n¿Quieres Comenzar?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        // Verifica la respuesta del usuario
+        User u = model.getCurrentUser();
+        if (respuesta == JOptionPane.YES_OPTION) {
+            u.setState("Jugando");
+            ServiceProxy.instance().uptadeReady(u);
+            entrarJuego();
+        } else {
+            u.setState("Espera");
+            ServiceProxy.instance().uptadeWait(u);
+            System.out.println("El usuario seleccionó No.");
+        }
+        ServiceProxy.instance().solicitarTablaUsuarios();
+
     }
 
     public void init_window_listener(){
@@ -81,6 +125,7 @@ public class Controller  {
         view.getBtnLogIn().addActionListener(button_listener);
         view.getBtnListo().addActionListener(button_listener);
         view.getBtnStart().addActionListener(button_listener);
+        view.getBtn_salir().addActionListener(button_listener);
 
 
     }
@@ -130,7 +175,22 @@ public class Controller  {
         }catch (Exception ex){
             view.lanzar_mensaje(ex.getMessage());
         }
-        view.limpiar_interfaz();
+        //view.limpiar_interfaz();
+    }
+
+    public void fichaValida(boolean r, Position obj){
+       //view.lanzar_mensaje("Ficha " + txt);
+
+        if (r && obj.getNumW()==1){
+            devolverbutton(obj.getRow(), obj.getColumn()).setText("X");
+            devolverbutton(obj.getRow(), obj.getColumn()).setBackground(Color.orange);
+        }
+        if (r && obj.getNumW()==2){
+            devolverbutton(obj.getRow(), obj.getColumn()).setText("O");
+            devolverbutton(obj.getRow(), obj.getColumn()).setBackground(Color.GREEN);
+        }
+
+        //view.limpiar_interfaz();
     }
 
 
@@ -165,21 +225,33 @@ public class Controller  {
                 r = true;
         } return r;
     }
-
-    public void validar_excepciones() {
-        try {
-            //write code--------------------------------------------------------------------------
-        }catch (Exception ex){
-            view.lanzar_mensaje(ex.getMessage());
-        }
-    }
 */
+
+
     public Position generar_ficha(String txt) {
 
         int column = (int) this.obtenerColumn(txt);
         int row = (int) this.obtenerRow(txt);
         //validar_excepciones();
         return new Position(row, column, "gamed", numeroWorker);
+    }
+
+    public JButton devolverbutton(int row, int colum){
+        String op = "btn_"+row+"_"+colum;
+        JButton btn = null;
+        switch (op){
+            case "btn_0_0": btn = view.getBtn0_0(); break;
+            case "btn_1_0": btn = view.getBtn1_0(); break;
+            case "btn_2_0": btn = view.getBtn2_0(); break;
+            case "btn_0_1": btn = view.getBtn0_1(); break;
+            case "btn_1_1": btn = view.getBtn1_1(); break;
+            case "btn_2_1": btn = view.getBtn2_1(); break;
+            case "btn_0_2": btn = view.getBtn0_2(); break;
+            case "btn_1_2": btn = view.getBtn1_2(); break;
+            case "btn_2_2": btn = view.getBtn2_2(); break;
+            default: break;
+        }
+        return btn;
     }
 
     public int obtenerColumn(String op){

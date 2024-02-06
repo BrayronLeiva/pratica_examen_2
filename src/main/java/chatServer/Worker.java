@@ -14,6 +14,7 @@ public class Worker {
     IService service;
     User user;
     int numeroWorker;
+    int numeroPlayer;
 
     public Worker(Server srv, ObjectInputStream in, ObjectOutputStream out, User user, IService service, int num) {
         this.srv=srv;
@@ -66,7 +67,17 @@ public class Worker {
                 //case Protocol.LOGIN: done on accept
                 case Protocol.LOGOUT:
                     try {
+                        User u = (User) in.readObject();
                         srv.remove(user);
+                        service.logout(u);
+                        ListaUsers users = service.getListUsers();
+
+                        ListaUsers newList = new ListaUsers();
+                        for (User obj:users.getUsers()) {
+                            newList.getUsers().add(new User(obj.getNombre(), obj.getClave(), obj.getState()));
+                        }
+
+                        srv.send_lista_users(newList); //ya que es para cada usuario
                         service.inicializar_servidor();
                         //service.logout(user); //nothing to do
                     } catch (Exception ex) {}
@@ -109,20 +120,23 @@ public class Worker {
                     case Protocol.REQUEST_NUMERO_WORKER:
                         try {
                             //srv.send_numero_worker(numeroWorker);
-                            this.send_numero_worker(numeroWorker); //ya que es para cada usuario
+                            srv.current_numero_player+=1;
+                            numeroPlayer = srv.current_numero_player;
+                            this.send_numero_worker(numeroPlayer); //ya que es para cada usuario
                         } catch (Exception ex) {}
                         break;
                     case Protocol.ENVIAR_FICHA:
                         try {
-                            if(srv.getCurrent_num_worker()<2){
-                                srv.deliver("Deben De Haber 2 Jugadores Conectado Para Jugar\n");
+                            if(srv.getCurrent_numero_player()<2){
+                                this.deliver("Deben De Haber 2 Jugadores Conectado Para Jugar\n");
                                 Position obj = (Position) in.readObject();
                             }else {
 
                                 System.out.println("Se tiene que agregar una ficha");
                                 Position obj = (Position) in.readObject();
                                 //System.out.println(obj.getState());
-                                service.enviar_ficha(obj);
+                                boolean r = service.enviar_ficha(obj);
+                                srv.fichaCorrecta(r, new Position(obj.getRow(), obj.getColumn(),obj.getState(), obj.getNumW()));
                                 String game = service.juegoGanado();
                                 if (!game.equals("")) {
                                     srv.deliver(game);
@@ -137,10 +151,7 @@ public class Worker {
                         try {
                             //srv.send_numero_worker(numeroWorker);
                             ListaUsers users = service.getListUsers();
-                            //System.out.println("Imprimiendo Antes De Enviar");
-                            //for (User obj: users.getUsers()) {
-                                //System.out.println(obj.getNombre() + " " + obj.getState());
-                            //}
+
                             ListaUsers newList = new ListaUsers();
                             for (User obj:users.getUsers()) {
                                 newList.getUsers().add(new User(obj.getNombre(), obj.getClave(), obj.getState()));
@@ -151,11 +162,52 @@ public class Worker {
                         break;
                     case Protocol.UPTADE_LISTA_USERS:
                         try {
+                            if(srv.getCurrent_numero_player()>=2){
+                                this.deliver("La Sala De Juego Esta Ocupada\nEspera tu turno");
+                                User obj = (User) in.readObject();
+                            }
                             //srv.send_numero_worker(numeroWorker);
                             User obj = (User) in.readObject();
                             service.uptade(obj, 0);
+                            String r = service.playersReady();
+                            if (!r.equals("")){
+                                String[] names = r.split("-");
+                                String nombre1 = names[0];
+                                String nombre2 = names[1];
+                                srv.lanzarPartida(nombre1,nombre2);
+                            }
                             //ListaUsers users = service.getListaPlayers();
                             //srv.send_lista_users(users); //ya que es para cada usuario
+                        } catch (Exception ex) {}
+                        break;
+                    case Protocol.UPTADE_WAIT_LISTA_USERS:
+                        try {
+                            //srv.send_numero_worker(numeroWorker);
+                            User obj = (User) in.readObject();
+                            service.uptadeWait(obj);
+                            //ListaUsers users = service.getListaPlayers();
+                            //srv.send_lista_users(users); //ya que es para cada usuario
+                        } catch (Exception ex) {}
+                        break;
+                    case Protocol.UPTADE_READY_LISTA_USERS:
+                        try {
+
+                            User obj = (User) in.readObject();
+                            service.uptadeReady(obj);
+
+                        } catch (Exception ex) {}
+                        break;
+                    case Protocol.SALIR_JUEGO:
+                        try {
+                            //srv.send_numero_worker(numeroWorker);
+                            User obj = (User) in.readObject();
+                            service.uptadeWait(obj);
+                            //service.uptadeAllWait();
+                            srv.current_numero_player=0;
+                            //srv.all_to_lobby();
+
+
+
                         } catch (Exception ex) {}
                         break;
 
@@ -166,6 +218,34 @@ public class Worker {
                 System.out.println(ex);
                 continuar = false;
             }                        
+        }
+    }
+
+    public void all_to_lobby(){
+        try {
+            out.writeInt(Protocol.ALL_TO_LOBBY);
+            out.flush();
+        } catch (IOException ex) {
+        }
+    }
+
+
+    public void fichaCorrecta(boolean r, Position obj){
+        try {
+            out.writeInt(Protocol.FICHA_CORRECTA);
+            out.writeObject(r);
+            out.writeObject(obj);
+            out.flush();
+        } catch (IOException ex) {
+        }
+    }
+    public void lanzarPartida(String nom1, String nom2){
+        try {
+            out.writeInt(Protocol.LANZAR_PARTIDA);
+            out.writeObject(nom1);
+            out.writeObject(nom2);
+            out.flush();
+        } catch (IOException ex) {
         }
     }
     public void send_numero_worker(int numeroWorker){
@@ -247,4 +327,6 @@ public class Worker {
     public void setNumeroWorker(int numeroWorker) {
         this.numeroWorker = numeroWorker;
     }
+
+    public User getUser() {return user;}
 }
