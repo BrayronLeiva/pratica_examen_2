@@ -9,6 +9,7 @@ public class Data {
 
     ListaUsers users;
     ListaUsers players;
+    int mov;
 
 
     // Declarar una matriz de enteros con tamaño 3x3
@@ -22,6 +23,7 @@ public class Data {
         tablero = new Position[3][3];
         this.inicializarTablero();
         this.imprimirTablero();
+        mov = 0;
 
     }
 
@@ -44,6 +46,7 @@ public class Data {
             }
             //System.out.println("Salto\n");
         }
+        mov = 0;
 
     }
 
@@ -119,7 +122,7 @@ public class Data {
     }
 */
     public boolean colocarFicha(Position obj){
-
+        mov++;
         System.out.println(obj.getState());
         int colum = obj.getColumn();
         int row = obj.getRow();
@@ -136,9 +139,20 @@ public class Data {
         String juegoH = this.juegoGanadoHorizontal();
         String juegoV = this.juegoGanadoVertical();
         String juegoD = this.juegoGanadoDiagonal();
+        String juegoDI = this.juegoGanadoDiagonalInvertida();
+        String empate = this.empate();
         if (!juegoH.equals("")){ return  juegoH;}
         if (!juegoV.equals("")){ return  juegoV;}
         if (!juegoD.equals("")){ return  juegoD;}
+        if (!juegoDI.equals("")){ return  juegoDI;}
+        if (!empate.equals("")){ return  empate;}
+        return "";
+    }
+
+    public String empate(){
+        if(mov>=9){
+            return "Empate\n";
+        }
         return "";
     }
 
@@ -191,7 +205,6 @@ public class Data {
         }
         return "";
     }
-
     public String juegoGanadoDiagonal(){
         int player1 = 0;
         int player2 = 0;
@@ -214,6 +227,40 @@ public class Data {
             player1++;
             player2 = 0;
         } else if (tablero[2][2].getState().equals("gamed") && tablero[2][2].getNumW()==2) {
+            player2++;
+            player1 = 0;
+        }
+
+        if (player1==3){
+            return "Player 1 Gano\n";
+        } else if (player2==3) {
+            return "Plater 2 Gano\n";
+        }
+
+        return "";
+    }
+    public String juegoGanadoDiagonalInvertida(){
+        int player1 = 0;
+        int player2 = 0;
+
+        if(tablero[2][0].getState().equals("gamed") && tablero[2][0].getNumW()==1){
+            player1++;
+            player2 = 0;
+        } else if (tablero[2][0].getState().equals("gamed") && tablero[2][0].getNumW()==2) {
+            player2++;
+            player1 = 0;
+        }
+        if(tablero[1][1].getState().equals("gamed") && tablero[1][1].getNumW()==1){
+            player1++;
+            player2 = 0;
+        } else if (tablero[1][1].getState().equals("gamed") && tablero[1][1].getNumW()==2) {
+            player2++;
+            player1 = 0;
+        }
+        if(tablero[0][2].getState().equals("gamed") && tablero[0][2].getNumW()==1){
+            player1++;
+            player2 = 0;
+        } else if (tablero[0][2].getState().equals("gamed") && tablero[0][2].getNumW()==2) {
             player2++;
             player1 = 0;
         }

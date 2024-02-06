@@ -108,7 +108,7 @@ public class Controller  {
     }
 
     public void all_to_lobby(){
-        //view.lanzar_mensaje("Jugador");
+        //view.lanzar_mensaje("Jugador"); // --
         view.entrarListaEspera();
 
     }
@@ -218,6 +218,14 @@ public class Controller  {
 
     public void fichaValida(boolean r, Position obj){
        //view.lanzar_mensaje("Ficha " + txt);
+        if(r==false && obj.getNumW()==numeroWorker){
+            JOptionPane.showMessageDialog(view, "Posicion Seleccionada\n", "Mensaje" , JOptionPane.INFORMATION_MESSAGE);
+            if (numeroWorker == 1) {
+                changeTurno(2);
+            } else if (numeroWorker == 2) {
+               changeTurno(1);
+            }
+        }
 
         if (r && obj.getNumW()==1){
             devolverbutton(obj.getRow(), obj.getColumn()).setText("X");
@@ -444,6 +452,10 @@ public class Controller  {
 
     public void lanzar_mensaje(String msg){
         view.lanzar_mensaje(msg);
+    }
+
+    public User obtenerUser(){
+        return model.getCurrentUser();
     }
 
 }

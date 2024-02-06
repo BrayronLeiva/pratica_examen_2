@@ -153,9 +153,12 @@ public class Server {
     }
     
     public void remove(User u){
-        for(Worker wk:workers) if(wk.user.equals(u)){workers.remove(wk);break;}
+        for(Worker wk:workers)
+            if(wk.user.getNombre().equals(u.getNombre())){
+                workers.remove(wk);break;
+            }
         System.out.println("Quedan: " + workers.size());
-        reasignar();
+        //reasignar();
     }
 
     public void win_easy(int nPl){
@@ -165,7 +168,7 @@ public class Server {
             }
         }
     }
-
+/*
     public void reasignar(){
         if(workers.size()==1) {
             workers.get(0).setNumeroWorker(1);
@@ -177,6 +180,8 @@ public class Server {
             current_num_worker = 0;
         }
     }
+
+ */
 
     public void uptade_candidato_lista_clientes(Candidato obj){
         for(Worker wk:workers){

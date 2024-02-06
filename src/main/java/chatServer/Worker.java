@@ -236,6 +236,9 @@ public class Worker {
             }                        
         }
     }
+
+
+
     public void enviar_ganador(String message){ //deliver personalizado
         try {
             out.writeInt(Protocol.DELIVER_PLAYERS);

@@ -90,6 +90,7 @@ public class Button_Listener implements ActionListener {
             case "Cerrar Sesión": {
                 System.out.println("Se ejecuto cerrar secion\n");
                 controller.logout();
+                //ServiceProxy.instance().solicitarTablaUsuarios();
                 JFrame frame = controller.getView();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.dispose();
