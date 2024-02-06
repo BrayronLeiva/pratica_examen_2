@@ -3,6 +3,8 @@ package chatServer;
 import chatProtocol.*;
 import chatServer.data.Data;
 
+import java.util.List;
+
 public class Service implements IService{
 
     private Data data;
@@ -29,11 +31,17 @@ public class Service implements IService{
     }
 
     public User login(User p) throws Exception{
-        //for(User u:data.getUsers()) if(p.equals(u)) return u;
-        //throw new Exception("User does not exist");
+        for(User u:data.getUsers().getUsers()) if(p.getNombre().equals(u.getNombre())&&p.getClave().equals(u.getClave())) {
+            System.out.println("Ingresando Usuario "+ u.getNombre() + " " + u.getClave());
+
+            data.getPlayers().getUsers().add(new User(p.getNombre(), p.getClave(), "Espera"));
+            u.setState("Espera");
+            return p;
+        }
+        throw new Exception("Este usuario No Esta Registrado");
 
         //p.setNombre(p.getId());
-        return p;
+        //return p;
     }
 
     /*public Lista_Candidatos obtener_lista_candidatos(){
@@ -56,6 +64,31 @@ public class Service implements IService{
         }
         return "";
         //data.juegoGanado();
+    }
+
+    @Override
+    public void solicitarTablaUsuarios() {}
+    @Override
+    public ListaUsers getListaPlayers(){
+
+        //System.out.println("TAMANO " + data.getPlayers().size());
+        //System.out.println(data.getPlayers().size());
+
+        return  data.getPlayers();
+        //return data.getPlayers();
+    }
+
+    public ListaUsers getListUsers(){
+        //data.imprimirListaUsuarios();
+        data.imprimirListaPlayers();
+        return data.getUsers();
+        //return data.cloneListUsers();
+
+    }
+
+    @Override
+    public void uptade(User user, int i) {
+        data.uptade(user, i);
     }
 
    /* @Override

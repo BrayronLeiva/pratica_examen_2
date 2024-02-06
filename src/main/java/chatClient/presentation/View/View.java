@@ -1,71 +1,40 @@
 package chatClient.presentation.View;
 
 import chatClient.Application;
+import chatClient.logic.ServiceProxy;
 import chatClient.presentation.Controller.Controller;
 import chatClient.presentation.Model.Model;
+import chatProtocol.User;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 public class View extends JFrame {
     private JPanel panel;
+    private LogIn login;
+    private ListaEsperaView esperaView;
+    private JButton btn_1_1;
+    private JButton btn_2_1;
+    private JButton btn_0_1;
+    private JButton btn_0_0;
+    private JButton btn_0_2;
+    private JButton btn_1_0;
+    private JButton btn_1_2;
+    private JButton btn_2_2;
+    private JButton btn_2_0;
     private JButton btnPoner;
-    private JButton btnA1;
-    private JButton btnA2;
-    private JButton btnA3;
-    private JButton btnA4;
-    private JButton btnA5;
-    private JButton btnA6;
-    private JButton btnB1;
-    private JButton btnB2;
-    private JButton btnB3;
-    private JButton btnB4;
-    private JButton btnB5;
-    private JButton btnB6;
-    private JButton btnC1;
-    private JButton btnC2;
-    private JButton btnC3;
-    private JButton btnC4;
-    private JButton btnC5;
-    private JButton btnC6;
-    private JButton btnD1;
-    private JButton btnD2;
-    private JButton btnD3;
-    private JButton btnD4;
-    private JButton btnD5;
-    private JButton btnD6;
-    private JButton btnE1;
-    private JButton btnE2;
-    private JButton btnE3;
-    private JButton btnE4;
-    private JButton btnE5;
-    private JButton btnE6;
-    private JButton btnF1;
-    private JButton btnF2;
-    private JButton btnF3;
-    private JButton btnF4;
-    private JButton btnF5;
-    private JButton btnG6;
-    private JButton btnG1;
-    private JButton btnG2;
-    private JButton btnG3;
-    private JButton btnG4;
-    private JButton btnG5;
-    private JButton btnF6;
     private JComboBox cmOption;
-    private JLabel lbA;
-    private JLabel lbB;
-    private JLabel lb_C;
-    private JLabel lb_D;
-    private JLabel lb_E;
-    private JLabel lb_F;
-    private JLabel lb_G;
     private JLabel lbPlayer;
     private JComboBox cm_row;
     Model model;
     Controller controller;
 
     public View(Controller controller)  {
-        panel.setVisible(true);
+        login = new LogIn();
+        esperaView = new ListaEsperaView();
+        this.setContentPane(login.getLoginPanel());
+        panel.setVisible(false);
         this.setSize(700,500);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.setTitle("CONECTA 4");
@@ -73,10 +42,20 @@ public class View extends JFrame {
             this.setIconImage((new ImageIcon(Application.class.getResource("/logo.png"))).getImage());
         } catch (Exception e) {}
         this.controller = controller;
-        this.setContentPane(panel);
+        //this.setContentPane(panel);
         this.setVisible(true);
         //this.initButtons(); //creo que por posicion y el flujo que no funciona asi
 
+    }
+
+    public String obtenerUsuario(){
+        String user = login.getTextField1().getText();
+        return user;
+
+    }
+    public String obtenerClave(){
+        String password = login.getTextField2().getText();
+        return password;
     }
 
     public void setModel(Model model) {
@@ -102,7 +81,54 @@ public class View extends JFrame {
     }
 
     public void limpiar_interfaz(){
-        cmOption.setSelectedItem("");
+
+    }
+
+    public void entrarJuego(){
+        this.setContentPane(panel);
+        panel.setVisible(true);
+        login.getLoginPanel().setVisible(false);
+    }
+
+    public void recargarTablaEspera(List<User> listaUsuarios){
+        for (User obj:listaUsuarios) {
+            System.out.println(obj.getNombre() + " " + obj.getClave() + " " + obj.getState());
+        }
+
+        System.out.println("RECARGANDO TABLA----------------------------------------------------------------");
+        JTable table = esperaView.getTableEspera();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+        this.limpiarTabla();
+
+        for (User usuario : listaUsuarios) {
+            //System.out.println("Ingresando Usuario "+ usuario.getNombre() + " " + usuario.getClave());
+
+            Object[] row = {usuario.getNombre(),usuario.getState()};
+            model.addRow(row);
+        }
+
+    }
+
+
+    public void limpiarTabla() {
+        System.out.println("Limpiando tabla");
+        JTable table = esperaView.getTableEspera();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+        model.setRowCount(0);
+    }
+
+
+    public void entrarListaEspera(){
+        login.getTextField1().setText("");
+        login.getTextField2().setText("");
+        ServiceProxy.instance().solicitarTablaUsuarios();
+        JPanel esperaP = esperaView.getPanelEspera();
+        this.setContentPane(esperaP);
+        this.repaint();
+        this.revalidate();
+        login.getLoginPanel().setVisible(false);
     }
 
     public JButton getBtnPoner() {
@@ -113,4 +139,46 @@ public class View extends JFrame {
     }
 
     public JLabel getLbPlayer() {return lbPlayer;}
+
+    public JButton getBtn1_1() {
+        return btn_1_1;
+    }
+
+    public JButton getBtn2_1() {
+        return btn_2_1;
+    }
+
+    public JButton getBtn0_1() {
+        return btn_0_1;
+    }
+
+    public JButton getBtn0_0() {
+        return btn_0_0;
+    }
+
+    public JButton getBtn0_2() {
+        return btn_0_2;
+    }
+
+    public JButton getBtn1_0() {
+        return btn_1_0;
+    }
+
+    public JButton getBtn1_2() {
+        return btn_1_2;
+    }
+
+    public JButton getBtn2_2() {
+        return btn_2_2;
+    }
+
+    public JButton getBtn2_0() {
+        return btn_2_0;
+    }
+
+    public JButton getBtnLogIn() {return login.getBtnLogIn();}
+    public JButton getBtnListo() {return esperaView.getBtnListo();}
+
+    public JButton getBtnStart() {return esperaView.getBtnStart();}
+
 }

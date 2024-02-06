@@ -28,4 +28,7 @@ public class Protocol {
     public static final int REQUEST_NUMERO_WORKER = 1001;
     public static final int SEND_NUMERO_WORKER = 1002;
     public static final int SEND_PLAYER_PLAYED = 1003;
+    public static final int REQUEST_LISTA_USERS = 1004;
+    public static final int SEND_LISTA_USERS = 1005;
+    public static final int UPTADE_LISTA_USERS = 1006;
 }

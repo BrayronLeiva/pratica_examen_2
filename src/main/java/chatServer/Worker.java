@@ -5,6 +5,7 @@ import chatProtocol.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 public class Worker {
     Server srv;
@@ -82,8 +83,7 @@ public class Worker {
                         break;
                     case Protocol.SEND_LISTA_CANTIDADOS:
                         try {
-                            //Lista_Candidatos list = service.obtener_lista_candidatos();
-                            //srv.set_lista_candidatos_clientes(list);
+
                         } catch (Exception ex) {}
                         break;
                     case Protocol.POST:
@@ -133,6 +133,31 @@ public class Worker {
                             }
                         } catch (Exception ex) {}
                         break;
+                    case Protocol.REQUEST_LISTA_USERS:
+                        try {
+                            //srv.send_numero_worker(numeroWorker);
+                            ListaUsers users = service.getListaPlayers();
+                            System.out.println("Imprimiendo Antes De Enviar");
+                            for (User obj: users.getUsers()) {
+                                System.out.println(obj.getNombre() + " " + obj.getState());
+                            }
+                            ListaUsers newList = new ListaUsers();
+                            for (User obj:users.getUsers()) {
+                                newList.getUsers().add(new User(obj.getNombre(), obj.getClave(), obj.getState()));
+                            }
+
+                            srv.send_lista_users(newList); //ya que es para cada usuario
+                        } catch (Exception ex) {}
+                        break;
+                    case Protocol.UPTADE_LISTA_USERS:
+                        try {
+                            //srv.send_numero_worker(numeroWorker);
+                            User obj = (User) in.readObject();
+                            service.uptade(obj, 0);
+                            //ListaUsers users = service.getListaPlayers();
+                            //srv.send_lista_users(users); //ya que es para cada usuario
+                        } catch (Exception ex) {}
+                        break;
 
 
                 }
@@ -148,6 +173,17 @@ public class Worker {
             System.out.println("Se entro al deliver del worker");
             out.writeInt(Protocol.SEND_NUMERO_WORKER);//oiga estoyenviando un deliver
             out.writeInt(numeroWorker);
+            out.flush();
+            //aqui entrega solo a su propio cliente sin tener que propagar a todos
+        } catch (IOException ex) {
+        }
+    }
+
+    public void send_lista_users(ListaUsers list){
+        try {
+            System.out.println("Se entro al deliver lista del worker");
+            out.writeInt(Protocol.SEND_LISTA_USERS);//oiga estoyenviando un deliver
+            out.writeObject(list);
             out.flush();
             //aqui entrega solo a su propio cliente sin tener que propagar a todos
         } catch (IOException ex) {

@@ -6,8 +6,8 @@ import chatClient.presentation.View.View;
 
 import chatProtocol.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Controller  {
     View view;
@@ -18,19 +18,47 @@ public class Controller  {
     private int numeroWorker;
     
     public Controller() throws Exception {
-
+       // this.app = new AplicacionVista(this)
         this.view = new View(this);;
+
         this.model = new Model();
         localService = (ServiceProxy)ServiceProxy.instance();
         localService.setController(this);;
         view.setModel(model);
         this.init_window_listener();
         this.init_button_listener();
-        User u = new User();
-        this.login(u);
+        //this.inicioSecion();
         this.initCBopciones();
-        localService.solicitar_numero_worker();
+    }
 
+    public void inicioSecion(){
+        String user = view.obtenerUsuario();
+        String clave = view.obtenerClave();
+
+        System.out.println("Iniciando " + user + clave);
+
+        User u = new User(user, clave);
+        this.login(u);
+        //view.entrarJuego();
+        view.entrarListaEspera();
+
+        //localService.solicitar_numero_worker();
+
+    }
+
+    public void entrarJuego(){
+        view.entrarJuego();
+        localService.solicitar_numero_worker();
+    }
+
+    public void uptadeTables(List<User> list){
+        view.recargarTablaEspera(list);
+    }
+
+    public void ready(){
+        model.getCurrentUser().setState("Listo");
+        ServiceProxy.instance().uptade(model.getCurrentUser(), numeroWorker);
+        ServiceProxy.instance().solicitarTablaUsuarios();
     }
 
     public void init_window_listener(){
@@ -41,7 +69,19 @@ public class Controller  {
     public void init_button_listener(){
 
         button_listener = new Button_Listener(this);
-        view.getBtnPoner().addActionListener(button_listener);
+        view.getBtn0_0().addActionListener(button_listener);
+        view.getBtn1_0().addActionListener(button_listener);
+        view.getBtn2_0().addActionListener(button_listener);
+        view.getBtn0_1().addActionListener(button_listener);
+        view.getBtn1_1().addActionListener(button_listener);
+        view.getBtn2_1().addActionListener(button_listener);
+        view.getBtn0_2().addActionListener(button_listener);
+        view.getBtn1_2().addActionListener(button_listener);
+        view.getBtn2_2().addActionListener(button_listener);
+        view.getBtnLogIn().addActionListener(button_listener);
+        view.getBtnListo().addActionListener(button_listener);
+        view.getBtnStart().addActionListener(button_listener);
+
 
     }
 
@@ -52,7 +92,7 @@ public class Controller  {
             model.commit(Model.USER);
             ServiceProxy.instance().inicializar_servidor();
         }catch (Exception ex){
-            view.lanzar_mensaje("Ya hay 3 jugadores conectados\n");
+            //view.lanzar_mensaje("Ya hay 3 jugadores conectados\n");
             System.exit(0);
         }
     }
@@ -77,11 +117,11 @@ public class Controller  {
 
  */
 
-    public void ponerFicha(){
+    public void ponerFicha(String txt){
         try {
             Message message = new Message();
             //message.setMessage(text);
-            Position obj = this.generar_ficha();
+            Position obj = this.generar_ficha(txt);
             //if (model.getLista_candidatos().existAlready(obj.getId()))
                 //throw new Exception("Este cantidado ya existe\n");
             message.setSender(model.getCurrentUser());
@@ -93,14 +133,10 @@ public class Controller  {
         view.limpiar_interfaz();
     }
 
+
+
     public void initCBopciones(){
-        view.getCmOption().addItem("A");
-        view.getCmOption().addItem("B");
-        view.getCmOption().addItem("C");
-        view.getCmOption().addItem("D");
-        view.getCmOption().addItem("E");
-        view.getCmOption().addItem("F");
-        view.getCmOption().addItem("G");
+
     }
 /*
     public void efectuarVoto(){
@@ -138,26 +174,31 @@ public class Controller  {
         }
     }
 */
-    public Position generar_ficha() {
-        String op = String.valueOf(view.getCmOption().getSelectedItem());
-        if(op.equals("")){
-            System.out.println("VACIO\n");
-        }
-        int column = (int) this.obtenerColumn(op);
+    public Position generar_ficha(String txt) {
+
+        int column = (int) this.obtenerColumn(txt);
+        int row = (int) this.obtenerRow(txt);
         //validar_excepciones();
-        return new Position(column, "gamed", numeroWorker);
+        return new Position(row, column, "gamed", numeroWorker);
     }
 
     public int obtenerColumn(String op){
         int r= -1;
         switch (op){
-            case "A": r = 0; break;
-            case "B": r = 1; break;
-            case "C": r = 2; break;
-            case "D": r = 3; break;
-            case "E": r = 4; break;
-            case "F": r = 5; break;
-            case "G": r = 6; break;
+            case "btn_0_0", "btn_1_0", "btn_2_0": r = 0; break;
+            case "btn_0_1", "btn_1_1", "btn_2_1": r = 1; break;
+            case "btn_0_2", "btn_1_2", "btn_2_2": r = 2; break;
+            default: break;
+        }
+        return r;
+    }
+
+    public int obtenerRow(String op){
+        int r= -1;
+        switch (op){
+            case "btn_0_0", "btn_0_1", "btn_0_2": r = 0; break;
+            case "btn_1_0", "btn_1_1", "btn_1_2": r = 1; break;
+            case "btn_2_0", "btn_2_1", "btn_2_2": r = 2; break;
             default: break;
         }
         return r;
@@ -228,22 +269,50 @@ public class Controller  {
 
     public void initTurno(){
         if (numeroWorker==2){
-            view.getCmOption().setEnabled(false);
-            view.getBtnPoner().setEnabled(false);
+            view.getBtn0_0().setEnabled(false);
+            view.getBtn1_0().setEnabled(false);
+            view.getBtn2_0().setEnabled(false);
+            view.getBtn0_1().setEnabled(false);
+            view.getBtn1_1().setEnabled(false);
+            view.getBtn2_1().setEnabled(false);
+            view.getBtn0_2().setEnabled(false);
+            view.getBtn1_2().setEnabled(false);
+            view.getBtn2_2().setEnabled(false);
         }
         if(numeroWorker==1){
-            view.getCmOption().setEnabled(true);
-            view.getBtnPoner().setEnabled(true);
+            view.getBtn0_0().setEnabled(true);
+            view.getBtn1_0().setEnabled(true);
+            view.getBtn2_0().setEnabled(true);
+            view.getBtn0_1().setEnabled(true);
+            view.getBtn1_1().setEnabled(true);
+            view.getBtn2_1().setEnabled(true);
+            view.getBtn0_2().setEnabled(true);
+            view.getBtn1_2().setEnabled(true);
+            view.getBtn2_2().setEnabled(true);
         }
     }
 
     public void changeTurno(int numW){
         if(numeroWorker!=numW){
-            view.getCmOption().setEnabled(true);
-            view.getBtnPoner().setEnabled(true);
+            view.getBtn0_0().setEnabled(true);
+            view.getBtn1_0().setEnabled(true);
+            view.getBtn2_0().setEnabled(true);
+            view.getBtn0_1().setEnabled(true);
+            view.getBtn1_1().setEnabled(true);
+            view.getBtn2_1().setEnabled(true);
+            view.getBtn0_2().setEnabled(true);
+            view.getBtn1_2().setEnabled(true);
+            view.getBtn2_2().setEnabled(true);
         }else{
-            view.getCmOption().setEnabled(false);
-            view.getBtnPoner().setEnabled(false);
+            view.getBtn0_0().setEnabled(false);
+            view.getBtn1_0().setEnabled(false);
+            view.getBtn2_0().setEnabled(false);
+            view.getBtn0_1().setEnabled(false);
+            view.getBtn1_1().setEnabled(false);
+            view.getBtn2_1().setEnabled(false);
+            view.getBtn0_2().setEnabled(false);
+            view.getBtn1_2().setEnabled(false);
+            view.getBtn2_2().setEnabled(false);
         }
     }
 }

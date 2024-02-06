@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.SwingUtilities;
 
 public class ServiceProxy implements IService{
@@ -51,6 +53,37 @@ public class ServiceProxy implements IService{
         }catch (Exception ex){
             System.out.println("Excepcion: " + ex.getMessage());
         }
+    }
+
+    public void solicitarTablaUsuarios(){
+        try {
+            out.writeInt(Protocol.REQUEST_LISTA_USERS);
+            out.flush();
+
+        }catch (Exception ex){
+            System.out.println("Excepcion: " + ex.getMessage());
+        }
+    }
+    @Override
+    public void uptade(User user, int i){
+        try {
+            out.writeInt(Protocol.UPTADE_LISTA_USERS);
+            out.writeObject(user);
+            out.flush();
+
+        }catch (Exception ex){
+            System.out.println("Excepcion: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public ListaUsers getListUsers() {
+        return null;
+    }
+
+    @Override
+    public ListaUsers getListaPlayers() {
+        return null;
     }
 
     @Override
@@ -231,6 +264,19 @@ public class ServiceProxy implements IService{
                     }
                     break;
                 }
+                    case Protocol.SEND_LISTA_USERS: {
+                        try {
+                            System.out.println("Seteando worker\n\n\n\n\n\n\n");
+                            ListaUsers list;
+                            list= (ListaUsers) in.readObject();
+                            //System.out.println(list.get(0).getState() + list.get(0).getNombre() + " IIII");
+
+                            uptadeListaUser(list);
+                        } catch (Exception ex) {
+                            System.out.println("Excepcion: " + ex.getMessage());
+                        }
+                        break;
+                    }
                 } //switch
                 out.flush();
             } catch (IOException  ex) {
@@ -238,6 +284,7 @@ public class ServiceProxy implements IService{
             }                        
         }
     }
+
    private void deliver( final String message ){
       SwingUtilities.invokeLater(new Runnable(){
             public void run(){
@@ -289,5 +336,15 @@ public class ServiceProxy implements IService{
             }
         });
     }
+
+    private void uptadeListaUser(final ListaUsers list ){
+        SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+                controller.uptadeTables(list.getUsers());
+            }
+        }
+        );
+    }
+
 
 }

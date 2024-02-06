@@ -20,6 +20,12 @@ public class Position implements Serializable {
         this.state = state;
         this.numW = 0;
     }
+    public Position(int row, int column, String state, int idW) {
+        this.column = column;
+        this.row = row;
+        this.state = state;
+        this.numW = idW;
+    }
     public Position() {
     }
 

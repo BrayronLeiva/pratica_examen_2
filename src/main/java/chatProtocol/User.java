@@ -11,41 +11,55 @@ import java.util.List;
 import java.util.Objects;
 
 public class User implements Serializable{
-    //String id;
-    //String clave;
-    //String nombre;
+    String id;
+    String clave;
+    String nombre;
+    String state;
 
-    public User() {
+    public User(String nombre, String clave) {
         //this.id = id;
-        //this.clave = clave;
-        //this.nombre = nombre;
+        this.clave = clave;
+        this.nombre = nombre;
+        this.state = "Espera";
     }
 
-   // public String getId() {
-        //return id;
-    //}
+    public User(String nombre, String clave, String state) {
+        //this.id = id;
+        this.clave = clave;
+        this.nombre = nombre;
+        this.state = state;
+    }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getState() {return state;}
+
+    public void setState(String state) {
+        this.state = state;
+    }
     //public void setId(String id) {
         //this.id = id;
     //}
 
-    //public String getClave() {
-        //return clave;
-    //}
+    public String getClave() {
+        return clave;
+    }
 
-    //public void setClave(String clave) {
-        ////this.clave = clave;
-    //}
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
 
-    //public String getNombre() {
-        //return nombre;
-    //}
+    public String getNombre() {
+        return nombre;
+    }
 
-    //public void setNombre(String nombre) {
-        //this.nombre = nombre;
-    //}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    /*@Override
+    @Override
     public int hashCode() {
         int hash = 5;
         hash = 53 * hash + Objects.hashCode(this.id);
@@ -68,6 +82,6 @@ public class User implements Serializable{
             return false;
         }
         return true;
-    }*/
+    }
 
 }

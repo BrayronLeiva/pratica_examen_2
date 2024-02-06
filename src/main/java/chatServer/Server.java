@@ -78,7 +78,7 @@ public class Server {
         if (method!=Protocol.LOGIN) throw new Exception("Should login first");
         System.out.println("Comenzando Login");
         User user=(User)in.readObject();                          
-        user=service.login(user);
+        user=service.login(user);;
         out.writeInt(Protocol.ERROR_NO_ERROR);
         out.writeObject(user);
         out.flush();
@@ -130,6 +130,12 @@ public class Server {
     public void uptade_candidato_lista_clientes(Candidato obj){
         for(Worker wk:workers){
             wk.uptade_candidato_lista_clientes(obj);
+        }
+    }
+
+    public void  send_lista_users(ListaUsers list){
+        for(Worker wk:workers){
+            wk.send_lista_users(list);
         }
     }
 
