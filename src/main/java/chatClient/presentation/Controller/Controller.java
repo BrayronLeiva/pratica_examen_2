@@ -164,7 +164,7 @@ public class Controller  {
         view.getBtnListo().addActionListener(button_listener);
         view.getBtnStart().addActionListener(button_listener);
         view.getBtn_salir().addActionListener(button_listener);
-
+        view.getBtn_log_out().addActionListener(button_listener);
 
     }
 

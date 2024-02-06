@@ -2,6 +2,7 @@ package chatClient.presentation.Controller;
 
 import chatClient.logic.ServiceProxy;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -83,6 +84,15 @@ public class Button_Listener implements ActionListener {
             case "Salir": {
                 System.out.println("Se ejecuto salir\n");
                 controller.salirJuego();
+
+                break;
+            }
+            case "Cerrar Sesión": {
+                System.out.println("Se ejecuto cerrar secion\n");
+                controller.logout();
+                JFrame frame = controller.getView();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.dispose();
 
                 break;
             }

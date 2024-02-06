@@ -181,9 +181,7 @@ public class Worker {
                             }
                             //ListaUsers users = service.getListaPlayers();
                             //srv.send_lista_users(users); //ya que es para cada usuario
-                        } catch (Exception ex) {
-                            System.out.println(ex.getMessage());
-                        }
+                        } catch (Exception ex) {}
                         break;
                     case Protocol.UPTADE_WAIT_LISTA_USERS:
                         try {

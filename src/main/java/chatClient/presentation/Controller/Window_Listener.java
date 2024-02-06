@@ -15,10 +15,8 @@ public class Window_Listener implements WindowListener {
     @Override
     public void windowClosing(WindowEvent e) {
         try {
-            controller.logout();
             JFrame frame = controller.getView();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.dispose();
+            JOptionPane.showMessageDialog(frame, "Cierra Con Botones", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

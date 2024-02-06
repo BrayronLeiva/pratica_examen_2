@@ -181,5 +181,6 @@ public class View extends JFrame {
     public JButton getBtnListo() {return esperaView.getBtnListo();}
     public JButton getBtnStart() {return esperaView.getBtnStart();}
     public JTextField getTxtMensajes() {return esperaView.getTxtMensajes();}
+    public JButton getBtn_log_out() {return esperaView.getBtn_log_out();}
     public JButton getBtn_salir() {return btn_salir;}
 }

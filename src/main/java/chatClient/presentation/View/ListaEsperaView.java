@@ -10,6 +10,7 @@ public class ListaEsperaView {
     private JButton btnListo;
     private JTextField txtMensajes;
     private JButton btnStart;
+    private JButton btn_log_out;
 
     public ListaEsperaView() {
         panelEspera.setVisible(true);
@@ -31,6 +32,8 @@ public class ListaEsperaView {
     public JButton getBtnStart() {return btnStart;}
 
     public JTextField getTxtMensajes() {return txtMensajes;}
+
+    public JButton getBtn_log_out() {return btn_log_out;}
 
     public void initTable(){
         // Inicializar el modelo de la tabla
