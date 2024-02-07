@@ -17,12 +17,14 @@ public interface IService {
     public String juegoGanado();
     public void solicitarTablaUsuarios();
     public ListaUsers getListaPlayers();
+    public ListaUsers getListUsers();
+    public String playersReady();
+    public void salirJuego(User user, int i);
+    //uptades
     public void uptadeAllWait();
     public void uptade(User user, int i);
     public void uptadeWait(User user);
     public void uptadeReady(User user);
-    public ListaUsers getListUsers();
-    public String playersReady();
-    public void salirJuego(User user, int i);
+
 
 }

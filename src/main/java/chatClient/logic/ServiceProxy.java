@@ -186,15 +186,6 @@ public class ServiceProxy implements IService{
     }
 
     //@Override
-    public void agregar_cantidato(Candidato obj) {
-        try {
-            out.writeInt(Protocol.ADD_CANTIDATO);
-            out.writeObject(obj);
-            out.flush();
-        } catch (IOException ex) {
-
-        }
-    }
 
     @Override
     public boolean enviar_ficha(Position obj) {
@@ -208,24 +199,6 @@ public class ServiceProxy implements IService{
         return true;
     }
 
-    //@Override
-    public void efectuar_voto(String id) {
-        try {
-            out.writeInt(Protocol.VOTO_EFECTUADO);
-            out.writeObject(id);
-            out.flush();
-        } catch (IOException ex) {
-
-        }
-    }
-
-    //@Override
-    public Candidato obtener_cantidato_x_id(String id) {    return null;}
-
-    //@Override
-    public Lista_Candidatos obtener_lista_candidatos() {
-        return null;
-    }
 
     // LISTENING FUNCTIONS
    boolean continuar = true;    
@@ -256,36 +229,6 @@ public class ServiceProxy implements IService{
                         String message = (String) in.readObject();
                         deliver(message);
                     } catch (ClassNotFoundException ex) {
-                    }
-                    break;
-                }
-                case Protocol.ADD_CANTIDATO_LISTA: {
-                    System.out.println("Agregando candidato a mi lista propia");
-                    try {
-                        Candidato obj = (Candidato) in.readObject();
-                        agregar_candidato_lista(obj);
-
-                    } catch (Exception ex) {
-                    }
-                    break;
-                }
-                case Protocol.UPTADE_CANTIDATO_LISTA: {
-                        System.out.println("Actualizando candidato a mi lista propia");
-                        try {
-                            Candidato obj = (Candidato) in.readObject();
-                            actualizar_candidato_lista(obj);
-
-                        } catch (Exception ex) {
-                        }
-                        break;
-                    }
-                case Protocol.INIT_LISTA_CANTIDATOS: {
-                    System.out.println("Agregando candidato a mi lista propia");
-                    try {
-                        Lista_Candidatos list = (Lista_Candidatos) in.readObject();
-                        iniciar_candidato_lista(list);
-                    } catch (Exception ex) {
-                        System.out.println("Excepcion: " + ex.getMessage());
                     }
                     break;
                 }
@@ -464,31 +407,6 @@ public class ServiceProxy implements IService{
         });
     }
 
-    private void agregar_candidato_lista( final Candidato obj ){
-        SwingUtilities.invokeLater(new Runnable(){
-                                       public void run(){
-                                           controller.agregar_candidato_lista(obj);
-                                       }
-                                   }
-        );
-    }
-
-    private void iniciar_candidato_lista( final Lista_Candidatos list ){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                controller.iniciar_candidato_lista(list);
-            }
-        }
-        );
-   }
-
-    private void actualizar_candidato_lista( Candidato obj ){
-        SwingUtilities.invokeLater(new Runnable(){
-            public void run(){
-                controller.actualizar_candidato_lista(obj);
-            }
-        });
-    }
 
     private void uptadeListaUser(final ListaUsers list ){
         SwingUtilities.invokeLater(new Runnable(){

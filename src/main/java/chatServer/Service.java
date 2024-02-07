@@ -18,10 +18,6 @@ public class Service implements IService{
     }
 
    // @Override
-    public void agregar_cantidato(Candidato obj) {
-        //data.getLista_candidatos().add(obj);
-        //data.imprimir_candidatos();
-    }
 
     @Override
     public boolean enviar_ficha(Position obj) {

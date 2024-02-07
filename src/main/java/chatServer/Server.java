@@ -140,17 +140,6 @@ public class Server {
         }        
     }
 
-    public void add_candidato_lista_clientes(Candidato obj){
-        for(Worker wk:workers){
-            wk.add_candidato_lista_clientes(obj);
-        }
-    }
-
-    public void set_lista_candidatos_clientes(Lista_Candidatos list){
-        for(Worker wk:workers){
-            wk.set_lista_candidatos_clientes(list);
-        }
-    }
     
     public void remove(User u){
         for(Worker wk:workers)
@@ -183,11 +172,6 @@ public class Server {
 
  */
 
-    public void uptade_candidato_lista_clientes(Candidato obj){
-        for(Worker wk:workers){
-            wk.uptade_candidato_lista_clientes(obj);
-        }
-    }
 
     public void  send_lista_users(ListaUsers list){
         for(Worker wk:workers){

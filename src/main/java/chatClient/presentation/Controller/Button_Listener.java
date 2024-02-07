@@ -65,7 +65,7 @@ public class Button_Listener implements ActionListener {
             }
             case "Log In": {
                 System.out.println("Se ejecuto login\n");
-                controller.inicioSecion();
+                controller.read();
 
                 break;
             }

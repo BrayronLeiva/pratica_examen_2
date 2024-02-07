@@ -40,7 +40,7 @@ public class Controller  {
         }
     }
 
-    public void inicioSecion(){
+    public void read(){
         try {
             validar_excepciones();
             String user = view.obtenerUsuario();
@@ -63,6 +63,7 @@ public class Controller  {
     public void entrarJuego(){
         view.entrarJuego();
         localService.solicitar_numero_worker();
+        ServiceProxy.instance().solicitarTablaUsuarios();
     }
 
     public void salirJuego(){
@@ -105,6 +106,7 @@ public class Controller  {
         view.getBtn0_2().setBackground(nuevoColor);
         view.getBtn1_2().setBackground(nuevoColor);
         view.getBtn2_2().setBackground(nuevoColor);
+        view.getTxtMensajes().setText("");
     }
 
     public void all_to_lobby(){
@@ -353,30 +355,6 @@ public class Controller  {
         limpiarInterfaz();
         numeroWorker = 0;
         view.entrarListaEspera();
-    }
-
-    public void agregar_candidato_lista(Candidato obj){
-        model.agregar_candidato(obj);
-        model.imprimir_lista_candidatos();
-        System.out.println("Se agrego este candidato: " + obj.getNombre());
-        model.commit(Model.CHAT);
-        this.recargar_tabla();
-    }
-
-    public void iniciar_candidato_lista(Lista_Candidatos list) {
-        model.setLista_candidatos(list);
-        model.imprimir_lista_candidatos();
-        System.out.println("Se inicializo la lista");
-        model.commit(Model.CHAT);
-        this.recargar_tabla();
-    }
-
-    public void actualizar_candidato_lista(Candidato obj){
-        model.uptade_candidato(obj);
-        model.imprimir_lista_candidatos();
-        System.out.println("Se actualizo este candidato: " + obj.getNombre());
-        model.commit(Model.CHAT);
-        this.recargar_tabla();
     }
 
     public void recargar_tabla(){

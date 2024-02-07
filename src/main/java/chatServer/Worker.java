@@ -84,40 +84,6 @@ public class Worker {
                     } catch (Exception ex) {}
                     stop();
                     break;
-                    case Protocol.ADD_CANTIDATO:
-                        try {
-                            System.out.println("Se tiene que agregar un candidato");
-                            Candidato obj = (Candidato) in.readObject();
-                            System.out.println(obj.getNombre());
-                            //service.agregar_cantidato(obj);
-                            srv.add_candidato_lista_clientes(new Candidato(obj.getId(), obj.getNombre(),obj.getVotos()));
-                        } catch (Exception ex) {}
-                        break;
-                    case Protocol.SEND_LISTA_CANTIDADOS:
-                        try {
-
-                        } catch (Exception ex) {}
-                        break;
-                    case Protocol.POST:
-                    Message message=null;
-                    try {
-                        //message = (Message)in.readObject();
-                        //message.setSender(user);
-                        //srv.deliver(message);
-                        //service.post(message); // if wants to save messages, ex. recivier no logged on
-                        //System.out.println(user.getNombre()+": "+message.getMessage());
-                    } catch (Exception ex) {}
-                    break;
-                    case Protocol.VOTO_EFECTUADO:
-                        //Message message=null;
-                        try {
-                            String id = (String) in.readObject();
-                            //service.efectuar_voto(id);
-                            //Candidato obj = service.obtener_cantidato_x_id(id);
-                            //System.out.println("Votos de candidato que envio " + obj.getVotos());
-                            //srv.uptade_candidato_lista_clientes(new Candidato(obj.getId(),obj.getNombre(),obj.getVotos()));
-                        } catch (Exception ex) {}
-                        break;
                     case Protocol.REQUEST_NUMERO_WORKER:
                         try {
                             //srv.send_numero_worker(numeroWorker);
@@ -221,9 +187,6 @@ public class Worker {
                             srv.current_numero_player=0;
                             srv.resetUI(winner);
                             //srv.all_to_lobby();
-
-
-
                         } catch (Exception ex) {}
                         break;
 
@@ -330,36 +293,6 @@ public class Worker {
             out.writeObject(message);
             out.flush();
         } catch (IOException ex) {
-        }
-    }
-
-    public void add_candidato_lista_clientes(Candidato obj){
-       try {
-           out.writeInt(Protocol.ADD_CANTIDATO_LISTA);
-           out.writeObject(obj);
-           out.flush();
-       }catch (Exception ex){
-           System.out.println("Excepcion: " + ex.getMessage());
-       }
-    }
-
-    public void set_lista_candidatos_clientes(Lista_Candidatos list){
-        try {
-            out.writeInt(Protocol.INIT_LISTA_CANTIDATOS);
-            out.writeObject(list);
-            out.flush();
-        }catch (Exception ex){
-            System.out.println("Excepcion: " + ex.getMessage());
-        }
-    }
-
-    public void uptade_candidato_lista_clientes(Candidato obj){
-        try {
-            out.writeInt(Protocol.UPTADE_CANTIDATO_LISTA);
-            out.writeObject(obj);
-            out.flush();
-        }catch (Exception ex){
-            System.out.println("Excepcion: " + ex.getMessage());
         }
     }
 
